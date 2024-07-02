@@ -1,0 +1,476 @@
+@font-face {
+  font-family: bespokeBold;
+  src: url(assets/fonts/bespoke-bold.woff2);
+}
+
+@font-face {
+  font-family: bespoke;
+  src: url(assets/fonts/bespoke.woff2);
+}
+
+@font-face {
+  font-family: butler;
+  src: url(assets/fonts/Butler-Bold.woff2);
+}
+
+@font-face {
+  font-family: proxima;
+  src: url(assets/fonts/proxima.otf);
+}
+
+:root {
+  font-family: 'bespoke', Georgia, 'Times New Roman', Times, serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: #253036;
+  background-color: #f9f9f7;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+
+
+h1 {
+  margin:0;
+  color: #95abb5;
+  font-family: proxima, Arial, Helvetica, sans-serif;
+}
+
+a {
+  font-weight: 500;
+  color: #95abb5;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #7cbfd1;
+}
+
+a:hover img {
+  filter: brightness(1.1);
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+
+#app {
+  position:relative;
+  width:100%;
+  height:auto;
+  top:0;
+  display: flex;
+  opacity:0;
+  background: url(assets/paper.jpg);
+}
+
+.edgeGhost {
+  position:absolute;
+  background: #f9f9f7;
+  background-attachment: fixed;
+  background: url(assets/paper.jpg);
+}
+
+
+
+img {
+  height:auto;
+  width:100%;
+}
+
+
+#navBar {
+  position:relative;
+  width: 16.667%;
+  min-width: 400px;
+  box-sizing: border-box;
+  font-family: butler, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 1.5em;
+}
+
+
+#navFixed {
+  position:sticky;
+  top:calc(5vh + 30px);
+  width:90%;
+  min-width: 250px;
+  margin:auto;
+  padding:30px;
+  height:calc(90vh - 60px);
+  box-sizing:border-box;
+}
+
+#navFixed svg {
+  width:100%;
+  height:auto;
+}
+
+#navHead {
+  font-size: 4em;
+  font-family: proxima, Arial, Helvetica, sans-serif;
+}
+
+#navCurrent {
+  font-size:2em;
+  height:1.5em;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 30%,  rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(to bottom,  rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 30%,  rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
+  overflow:hidden;
+  font-family: proxima, Arial, Helvetica, sans-serif;
+}
+
+#sectionNav {
+  margin-top:2em;
+  padding-left: 1em;
+}
+
+#linkNav {
+  position:absolute;
+  bottom:0em;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.5s;
+  font-size: 0.8em;
+  padding-left: 1em;
+}
+
+#linkNav a {
+  position:relative;
+}
+
+#linkNav img {
+  position:absolute;
+  height:auto;
+  width:1.2em;
+  top:50%;
+  transform:translateY(-50%);
+}
+
+#linkNav span {
+  padding-left:1.5em;
+  display:inline-block;
+}
+
+#wrapper {
+  position:relative;
+  box-sizing: border-box;
+  width: calc(100% - 16.667%);
+  padding-right:20px;
+}
+
+#wrapper > div {
+  min-height:100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.imgHold {
+  position:relative;
+}
+
+/** ------------------------------------------------------------------------------------------------------------- */
+
+
+#introduction .skirt {
+  min-width: 50px;
+  flex-grow:1;
+}
+
+#introduction .body {
+  display: grid; 
+  grid-template-columns: 1.75fr 0.25fr 1.25fr;
+  margin: 10vh 0;
+  max-height:900px;
+  flex-grow:0;
+  flex-shrink:1;
+}
+
+#introduction .body > * {
+  position:relative;
+  height:100%; 
+}
+
+
+#introInfo {
+  max-width: 650px;
+  box-sizing: border-box;
+  padding: 5vh 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 50px;
+  font-size: 2em;
+}
+
+#introInfo > *:not(svg) {
+  align-items: center;
+}
+
+#introInfo h1 {
+  font-size:1.2em;
+}
+
+#introInfo .icons a {
+  margin-right:0.5em;
+}
+
+#introInfo .icons img {
+  height:1em;
+  width:auto;
+}
+
+#introduction .imgHold {
+  width:100%;
+}
+
+
+
+/** ------------------------------------------------------------------------------------------------------------- */
+
+#case_studies .skirt {
+  min-width: 50px;
+  flex-grow:1;
+}
+
+#case_studies .body {
+  flex-grow:0;
+  flex-shrink:1;
+}
+
+#case_studies .study {
+  position:relative;
+  height: auto;
+  display:grid;
+  grid-template-columns: 1fr 2.5fr;
+  grid-auto-flow: dense;
+  gap: 75px;
+  width:100%;
+  padding: 150px 0;
+}
+
+
+#case_studies .study:nth-child(odd) {
+  grid-template-columns: 2.5fr 1fr;
+  grid-template-areas: 'img .';
+}
+
+#case_studies .study:nth-child(even) {
+  grid-template-areas: '. img';
+}
+
+#case_studies .study:last-child {
+  margin-bottom:0px;
+}
+
+#case_studies .imgHold {
+  padding-top: 56.25%;
+  grid-area: img;
+  border: 1px solid rgba(149,171,181,0.25);
+}
+
+#case_studies .imgHold, .CStrans {
+  background:paleturquoise;
+  background-position: center;
+  background-size: cover;
+}
+
+#case_studies .velocity .imgHold, #trans-velocity {
+  background-image: url(assets/velocity/header.jpg);  
+}
+
+#case_studies .sliders .imgHold, #trans-sliders {
+  background-image: url(assets/sliders/slide1.jpg);  
+}
+
+#case_studies .dogs .imgHold, #trans-dogs {
+  background-image: url(assets/dogs/header.png);  
+}
+
+#case_studies .infoArea {
+  min-width: 280px;
+  max-width:450px;
+}
+
+#case_studies h1 {
+  font-size:2.5em;
+  margin-bottom:0.5em;
+}
+
+#case_studies .info {
+ position:relative;
+ padding: 5px;
+}
+
+#case_studies .cta {
+  margin-top:1.5em;
+  font-family: bespokeBold, Georgia, 'Times New Roman', Times, serif;
+  font-weight: bold;
+}
+
+#case_studies .meta {
+  position:relative;
+  display:flex;
+  flex-direction: row;
+  text-align:center;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 0.9em;
+  margin-bottom: 2em;
+  height: 5em;
+}
+
+#case_studies .data {
+  box-sizing: border-box;
+  padding:5px;
+}
+
+#case_studies .divider {
+  position:relative;
+  width:3px!important;
+  height:100%;
+  background: #95abb5;
+  background: linear-gradient(0deg, rgba(149,171,181,0) 0%, rgba(149,171,181,1) 40%, rgba(149,171,181,1) 60%, rgba(149,171,181,0) 100%);
+  }
+
+#case_studies span {
+  display:block;
+}
+
+#case_studies .label {
+  font-family: bespokeBold, Georgia, 'Times New Roman', Times, serif;
+  font-weight: bold;
+}
+
+
+/** ------------------------------------------------------------------------------------------------------------- */
+
+
+
+.slideshow {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.slideshow img {
+  position:absolute;
+  height:100%;
+  width:auto;
+}
+
+.slideshow .controls {
+  width:100%;
+  
+  display:flex;
+  flex-direction: row;
+  flex-shrink: 1;
+  flex-grow: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.slideshow .slidesWrapper {
+  height:auto;
+  width:Min(100%, calc( 16/9 * 100vh - 400px));
+  aspect-ratio: 16/9;
+
+}
+
+.slideshow .slides {
+  position:relative;
+  aspect-ratio: 16/9;
+}
+
+.slideshow .slide {
+  height:100%;
+  width:100%;
+}
+
+.slideshow .controls div {
+  padding:15px;
+}
+
+
+
+
+
+/** ------------------------------------------------------------------------------------------------------------- */
+
+#contact .skirt {
+  min-width: 50px;
+  flex-grow:1;
+}
+
+#contact .body {
+  display:flex;
+  flex-direction: row;
+  flex-grow:0;
+  flex-shrink:1;
+  justify-content: center;
+  align-items: center;
+  min-width:900px;
+  width:100%;
+  font-size:2em;
+}
+
+#contact .imgHold {
+  width:auto;
+  height:40%;
+  aspect-ratio: 1/1;
+}
+
+#contact .infoArea {
+  display:flex;
+  flex-direction: column;
+  height:40%;
+  margin-top: 20px;
+  margin-left: 50px;
+  font-size:1.2;
+}
+
+#contact h1 {
+  font-size:2.5em;
+  line-height:1.2em;
+  margin-left: 50px;
+}
+
+
+#contact .infoArea a {
+  position:relative;
+}
+
+#contact .infoArea img {
+  position:absolute;
+  height:auto;
+  width:1em;
+  top:50%;
+  transform:translateY(-50%);
+}
+
+#contact .infoArea #tel span {
+  margin-bottom:0.2em;
+}
+
+#contact .infoArea span {
+  padding-left:1.5em;
+  display:inline-block;
+}
+
+
+
+
+#svgTest svg {
+  width:100%;
+  height:auto;
+}
