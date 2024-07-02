@@ -28,7 +28,7 @@ export const domEle = []
 
 const app = document.querySelector('#app')
 
-
+async function setup() {
 // wait for dom generation
 await init(app)
 
@@ -95,6 +95,8 @@ const updateBackgroundPosition = () => {
   });
 };
 window.addEventListener('scroll', updateBackgroundPosition);
+}
 
+setup()
 
 // processSVG()
