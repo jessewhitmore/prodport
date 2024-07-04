@@ -1,5 +1,5 @@
 import { gsap } from "gsap";
-
+import { loadResolver } from "./loadhandler";
 
 
 async function insertCSMD(selector, mdFilePath) {
@@ -104,41 +104,6 @@ class slideInstance {
         }
     }
 
-    waitForImagesToLoad(container) {
-        return new Promise((resolve, reject) => {
-          const images = container.querySelectorAll('img');
-          const totalImages = images.length;
-          let imagesLoaded = 0;
-      
-          if (totalImages === 0) {
-            resolve(container); // No images to load
-          }
-      
-          images.forEach((img) => {
-            if (img.complete) {
-              imagesLoaded++;
-              if (imagesLoaded === totalImages) {
-                resolve(container);
-              }
-            } else {
-              img.addEventListener('load', () => {
-                imagesLoaded++;
-                if (imagesLoaded === totalImages) {
-                  resolve(container);
-                }
-              });
-      
-              img.addEventListener('error', () => {
-                imagesLoaded++;
-                if (imagesLoaded === totalImages) {
-                  resolve(container); // Resolve even if some images fail to load
-                }
-              });
-            }
-          });
-        });
-    }
-
     async setup(studyName) {
 
         this.studyName = studyName
@@ -197,9 +162,12 @@ class slideInstance {
                 } else {
                     slide.style.visibility = 'hidden'
                 }
+                slide.querySelectorAll('img').forEach(img => {
+                    loadResolver.toLoad.push(img)
+                })
             }
         })
-
+ 
         var supportsPassive = false;
         try {
           window.addEventListener("test", null, Object.defineProperty({}, 'passive', {

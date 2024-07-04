@@ -1,7 +1,8 @@
 import { gsap } from "gsap";
 
 import { contactInfo, domEle } from "../main";
-
+import { studyHandler, caseStudyGen } from './caseStudy.js'
+import { loadResolver } from "./loadhandler.js";
 
 Object.defineProperty(String.prototype, 'capitalise', {
   value: function() {
@@ -38,6 +39,7 @@ function ve(to, name, style, type) {
       <div class = "skirt"></ div>
     `
     const target = dom.querySelector('.body')
+
 
     let obj = {
       targetName,
@@ -186,8 +188,11 @@ function ve(to, name, style, type) {
     
 
         selector.innerHTML = mdText;
+        selector.querySelectorAll('img').forEach(img => {
+          loadResolver.toLoad.push(img)
+      })
+    
 
-        console.log(selector)
     } catch (error) {
         console.error('Error loading Markdown content:', error);
         const refresh = document.createElement('a')
@@ -219,15 +224,11 @@ function ve(to, name, style, type) {
 
 export async function init(app) {
   // set-up 
+
   const headerSec = await genSec('introduction')
   const csSec = await genSec('case_studies')
 //  const testSec = genSec('testimonial')
   const contactSec = await genSec('contact')
-
-
-
-
-
 
   // nav elements
   const navCurrent = navSec.querySelector('#navCurrent')
@@ -244,11 +245,6 @@ export async function init(app) {
     split.forEach(val => {
       textVal += val.capitalise() + ' '
     })
-
-    // setup title
-    // const navCurrentEle = document.createElement('div')
-    // navCurrentEle.innerText = textVal.trim()
-    // navCurrent.appendChild(navCurrentEle)
 
     // set-up links
     const sectionNavEle = document.createElement('a')
@@ -267,9 +263,11 @@ export async function init(app) {
 
   })
 
+
   app.appendChild(navSec)
   app.appendChild(wrapper)
-
+  // ----------------------------------------------------------------------- DOM ATTACHED
+  
   const introIcons = []
   for(const props in contactInfo) {
     const p = contactInfo[props]
@@ -312,6 +310,8 @@ export async function init(app) {
 
     link.addEventListener('click', (e)=>{linkClick(e)})
     linkNav.appendChild(link)
+
+
   }
   
 
@@ -486,4 +486,40 @@ export async function init(app) {
 
   })  
 
+  setTimeout(()=>{
+
+  loadCases(csSec)
+
+  },0)
+
+
 }
+
+
+
+
+
+
+
+
+async function loadCases(cs) {
+  const studies = cs.dom.querySelectorAll('.study')
+  const study1 = await caseStudyGen(app, studies[0])
+  studies[0].addEventListener('click', ()=>{
+    study1.populate(studies[0].querySelector('.imgHold'))
+  })
+  
+  const study2 = await caseStudyGen(app, studies[1])
+  studies[1].addEventListener('click', ()=>{
+    study2.populate(studies[1].querySelector('.imgHold'))
+  })
+  
+  
+  const study3 = await caseStudyGen(app, studies[2])
+  studies[2].addEventListener('click', ()=>{
+    study3.populate(studies[2].querySelector('.imgHold'))
+  })  
+}
+
+
+

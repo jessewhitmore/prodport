@@ -9,5 +9,6 @@ I love solving puzzles and connecting dots. With 7+ years of making beautiful, f
 <div>
 </div>
 
-<div class = "imgHold" style = "background-image:url(assets/me.jpg); background-position: center; background-size:cover; ">
+<div class = "imgHold">
+<img data-src = "https://assets.playground.xyz/JWhitmore/aa6ca25e_me.jpg" />
 </div>

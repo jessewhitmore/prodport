@@ -1,25 +1,26 @@
-@font-face {
-  font-family: bespokeBold;
-  src: url(assets/fonts/bespoke-bold.woff2);
-}
 
 @font-face {
   font-family: bespoke;
-  src: url(assets/fonts/bespoke.woff2);
+  src: url(https://assets.playground.xyz/JWhitmore/f39ee03a_BespokeSerif-Regular.woff);
+}
+
+@font-face {
+  font-family: bespokeBold;
+  src: url(https://assets.playground.xyz/JWhitmore/cc6e51ce_BespokeSerif-Bold.woff);
 }
 
 @font-face {
   font-family: butler;
-  src: url(assets/fonts/Butler-Bold.woff2);
+  src: url(https://assets.playground.xyz/JWhitmore/8380fe7d_Butler-Bold.woff2);
 }
 
 @font-face {
   font-family: proxima;
-  src: url(assets/fonts/proxima.otf);
+  src: url(https://assets.playground.xyz/JWhitmore/2f3316c7_proxima.otf);
 }
 
 :root {
-  font-family: 'bespoke', Georgia, 'Times New Roman', Times, serif;
+  font-family: bespoke, Georgia, 'Times New Roman', Times, serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -71,14 +72,13 @@ body {
   top:0;
   display: flex;
   opacity:0;
-  background: url(assets/paper.jpg);
+  background: url(https://assets.playground.xyz/JWhitmore/59d3d051_paper.jpg) #f9f9f7;
 }
 
 .edgeGhost {
   position:absolute;
-  background: #f9f9f7;
   background-attachment: fixed;
-  background: url(assets/paper.jpg);
+  background: url(https://assets.playground.xyz/JWhitmore/59d3d051_paper.jpg)  #f9f9f7;
 }
 
 
@@ -88,6 +88,21 @@ img {
   width:100%;
 }
 
+
+.imgHold {
+  background: rgba(211, 238, 251, 0.15);
+}
+
+.imgHold img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity:0;
+  transition: opacity 1.5s 0.5s;
+}
 
 #navBar {
   position:relative;
@@ -229,9 +244,6 @@ img {
   width:auto;
 }
 
-#introduction .imgHold {
-  width:100%;
-}
 
 
 
@@ -275,25 +287,6 @@ img {
 #case_studies .imgHold {
   padding-top: 56.25%;
   grid-area: img;
-  border: 1px solid rgba(149,171,181,0.25);
-}
-
-#case_studies .imgHold, .CStrans {
-  background:paleturquoise;
-  background-position: center;
-  background-size: cover;
-}
-
-#case_studies .velocity .imgHold, #trans-velocity {
-  background-image: url(assets/velocity/header.jpg);  
-}
-
-#case_studies .sliders .imgHold, #trans-sliders {
-  background-image: url(assets/sliders/slide1.jpg);  
-}
-
-#case_studies .dogs .imgHold, #trans-dogs {
-  background-image: url(assets/dogs/header.png);  
 }
 
 #case_studies .infoArea {

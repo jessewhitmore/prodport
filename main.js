@@ -8,7 +8,7 @@ import { gsap } from "gsap"
 import { init } from './js/pagegen.js'
 import { studyHandler, caseStudyGen } from './js/caseStudy.js'
 import { returnDrawn, svgCleanUp, processSVG } from './js/svgDraw.js'
-
+import { setupLoader, loadResolver } from './js/loadhandler.js'
 
 
 export const contactInfo = {
@@ -22,45 +22,35 @@ export const contactInfo = {
 export const styles = {
   fill: '#d3eefb'//'#95abb5' // '#d3eefb'
 }
-
-
 export const domEle = []
 
 const app = document.querySelector('#app')
 
+
+
+
+
+// Ensure initial content is loaded first
+window.onload = () => {
+  console.warn('Initial content loaded');
+  svgCleanUp()
+  returnDrawn()
+};
+
+
+
+
+
+setupLoader()
 async function setup() {
 // wait for dom generation
 await init(app)
 
-returnDrawn()
 
 
 
 app.style.transition = 'all 0.5s'
 app.style.opacity = 1
-
-const studies = document.querySelectorAll('.study')
-
-const study1 = await caseStudyGen(app, studies[0])
-studies[0].addEventListener('click', ()=>{
-  study1.populate(studies[0].querySelector('.imgHold'))
-})
-
-const study2 = await caseStudyGen(app, studies[1])
-studies[1].addEventListener('click', ()=>{
-  study2.populate(studies[1].querySelector('.imgHold'))
-})
-
-
-const study3 = await caseStudyGen(app, studies[2])
-studies[2].addEventListener('click', ()=>{
-  study3.populate(studies[2].querySelector('.imgHold'))
-})
-
-
-
-
-
 
 
 
@@ -100,3 +90,14 @@ window.addEventListener('scroll', updateBackgroundPosition);
 setup()
 
 // processSVG()
+
+
+
+
+
+
+
+
+
+
+

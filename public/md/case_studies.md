@@ -1,5 +1,8 @@
 <div class = "study velocity">
 <div class = "imgHold">
+<img data-src="https://assets.playground.xyz/JWhitmore/3e658d49_header.jpg" />
+
+
 </div>
     <div class="infoArea">
         <h1 class="title">Velocity: New Ad Format</h1>
@@ -31,7 +34,8 @@
 </div>
 
 <div class = "study sliders">
-    <div class = "imgHold">
+    <div class = "imgHold"><img data-src="https://assets.playground.xyz/JWhitmore/60637ad8_slide1.jpg" />
+
 
     </div>
     <div class="infoArea">
@@ -64,7 +68,7 @@
     </div>
 
     <div class = "study dogs">
-        <div class = "imgHold">
+        <div class = "imgHold"><img data-src = "https://assets.playground.xyz/JWhitmore/9874ba11_header.png">
 
         </div>      
         <div class="infoArea">
