@@ -556,7 +556,8 @@ const blockObserver = new IntersectionObserver(blockChange, {
 
 class blockAniBuild {
   constructor() {
-    this.tl = gsap.timeline({paused: true, onStart:()=>{ this.img.forEach(i =>{ i.style.transition = 'none'; i.style.opacity = 0; }) }, onComplete: ()=>{ this.img.forEach(i =>{ i.style.transition = 'opacity 0.5s'; i.style.opacity = 1; grungeMask(i) }) } })
+    this.grunge = false
+    this.tl = gsap.timeline({paused: true, onStart:()=>{ this.img.forEach(i =>{ i.style.transition = 'none'; i.style.opacity = 0; this.grunge = true  }) }, onComplete: ()=>{ this.img.forEach(i =>{ i.style.transition = 'opacity 0.5s'; i.style.opacity = 1; if(this.grunge){ grungeMask(i); this.grunge = false } }) } })
     this.firstPlay = true
   }
 
@@ -732,13 +733,11 @@ export function grungeMask(img) {
   const maskW = iTrans[0].naturalWidth
   const maskH = iTrans[0].naturalHeight
   const ratio = (maskW/frames)/maskH
-  console.log(ratio)
   img.style.maskImage = `url(${iTrans[0].src})`
   img.style.maskMode = 'luminance'
   img.style.maskSize = 'auto 110%'
   img.style.maskPosition = `0px 0%`
   const h = img.offsetHeight * 1.1
-  console.log(h)
   const interval = setInterval(()=>{
     i++    
     img.style.maskPosition = `${(i * -h*ratio)}px 0%`

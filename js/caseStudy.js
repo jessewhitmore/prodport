@@ -52,7 +52,7 @@ export function studyHandler(study) {
 export async function caseStudyGen(app, study) {
     
     const studySlide = new slideInstance()
-
+    studySlide.imgHold = study.querySelector('.imgHold img').dataset.src
     let studyName = 'null'
     study.classList.forEach(v => {if(v !== 'study') studyName = v})
 
@@ -195,7 +195,15 @@ class slideInstance {
             opacity:1
         })
 
-        const transition = this.ve(document.body, 'CStrans', {position:'fixed', top:0, left:0})
+        console.log(this.imgHold)
+
+        const transition = this.ve(document.body, 'CStrans', {
+            position:'fixed', 
+            top:0, 
+            left:0,
+            background:`url(${this.imgHold})`,
+            backgroundSize: 'cover'
+        })
         transition.id = `trans-${this.studyName}`
         document.body.appendChild(slideshow)
 
