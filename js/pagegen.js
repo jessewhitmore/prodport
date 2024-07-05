@@ -475,8 +475,9 @@ export async function init(app) {
 
 
   loadCases(csSec)
-
   returnDrawn()
+  setTimeout(setupblockAni,50)
+
   window.addEventListener("resize", debounce);
 
   let resizeWatch = null

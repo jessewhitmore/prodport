@@ -51,7 +51,8 @@ function sv(type, attributes) {
         ele.appendChild(def)
         ele.id = `svg${svgID}`
         svgEles[ele.id] = {
-            ani: gsap.timeline({paused: true})
+            ani: gsap.timeline({paused: true}),
+            ele
         }
         svgAniObserver.observe(ele)
         svgID++
@@ -414,14 +415,22 @@ function cornerPieces(dom, wob, corners) {
 export function svgCleanUp() {
     svgID = 0
     console.log(svgEles)
+    console.log(svgAniObserver.entries)
     for (const key in svgEles) {
         if (svgEles.hasOwnProperty(key)) {
-            const svg = document.querySelector(`#${key}`)
-            svgAniObserver.unobserve(svg)
-            svgEles[key].ani.kill()
-            svg.remove()
+            const svg = svgEles[key].ele
+            console.log(svg)
+            try {
+                svgAniObserver.unobserve(svg)
+
+              } catch (e) {
+                console.error('Failed to unobserve:', key);
+              }
+              svgEles[key].ani.kill()
+              svg.remove()
         }
     }
+    
 }
 
 export function returnDrawn() {

@@ -1,4 +1,5 @@
 import { setupblockAni, grungeMask } from './pagegen.js'
+import { svgCleanUp, returnDrawn } from './svgDraw.js';
 
 export const loadResolver = {
     toLoad: [],
@@ -13,11 +14,17 @@ export function setupLoader() {
         // Monitor for new content
         const observer = new MutationObserver((mutationsList) => {
             for (const mutation of mutationsList) {
-                if (mutation.type === 'childList') {
+                let invalid = false
+                for(const added of mutation.addedNodes) {
+                    if(added.tagName == 'svg') invalid = true
+                }
+                if (mutation.type === 'childList' && !invalid) {
                     clearTimeout(delayLoadcheck)
                     delayLoadcheck = setTimeout(()=>{
                         checkImagesLoaded()
                         setupblockAni()
+
+
                     }, 25)
                     
                 }
@@ -61,7 +68,7 @@ function loadNext() {
 }
 
 function loadedIMG(img) {
-    img.style.visibility = 'visible'
+    if(img.style.visibility == 'hidden') img.style.visibility = 'visible'
     grungeMask(img)
     img.style.opacity = 1
     loadNext()
