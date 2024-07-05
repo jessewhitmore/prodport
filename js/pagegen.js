@@ -724,7 +724,7 @@ function imgTrans() {
 
 }
 
-function grungeMask(img) {
+export function grungeMask(img) {
 
   // 18 frames
   const frames = 18

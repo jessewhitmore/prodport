@@ -1,4 +1,4 @@
-import { setupblockAni } from './pagegen.js'
+import { setupblockAni, grungeMask } from './pagegen.js'
 
 export const loadResolver = {
     toLoad: [],
@@ -62,6 +62,7 @@ function loadNext() {
 
 function loadedIMG(img) {
     img.style.visibility = 'visible'
+    grungeMask(img)
     img.style.opacity = 1
     loadNext()
 }
