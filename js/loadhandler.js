@@ -1,3 +1,4 @@
+import { setupblockAni } from './pagegen.js'
 
 export const loadResolver = {
     toLoad: [],
@@ -14,7 +15,11 @@ export function setupLoader() {
             for (const mutation of mutationsList) {
                 if (mutation.type === 'childList') {
                     clearTimeout(delayLoadcheck)
-                    delayLoadcheck = setTimeout(checkImagesLoaded, 25)
+                    delayLoadcheck = setTimeout(()=>{
+                        checkImagesLoaded()
+                        setupblockAni()
+                    }, 25)
+                    
                 }
             }
         });
@@ -34,7 +39,8 @@ function checkImagesLoaded() {
             img.setAttribute('loadhandled',true)
         } else {
             img.setAttribute('loadhandled',true)
-            console.log('adding via dom mutation')
+            img.style.opacity = 0
+            img.style.visibility = 'hidden'
             loadResolver.toLoad.push(img)
         }
         if(images.length-1 == i) {
@@ -55,6 +61,7 @@ function loadNext() {
 }
 
 function loadedIMG(img) {
+    img.style.visibility = 'visible'
     img.style.opacity = 1
     loadNext()
 }

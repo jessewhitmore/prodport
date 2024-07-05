@@ -21,7 +21,7 @@ const svgAniObserver = new IntersectionObserver(entries => {
 
   }, {
     root: null, // Use the viewport as the container
-    rootMargin: '-10% 0px -20% 0px',
+    rootMargin: '-10% 0px -10% 0px',
     threshold: 0.1 
   });
   
@@ -396,7 +396,7 @@ function cornerPieces(dom, wob, corners) {
 
 
 
-    aniStroke(svg, lines, 0.25, 0.5 + Math.random(), 0.25)
+    aniStroke(svg, lines, 0.25, 0.2, 0.25)
     dom.appendChild(svg)
 }
 
@@ -413,6 +413,7 @@ function cornerPieces(dom, wob, corners) {
 
 export function svgCleanUp() {
     svgID = 0
+    console.log(svgEles)
     for (const key in svgEles) {
         if (svgEles.hasOwnProperty(key)) {
             const svg = document.querySelector(`#${key}`)

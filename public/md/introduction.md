@@ -9,6 +9,6 @@ I love solving puzzles and connecting dots. With 7+ years of making beautiful, f
 <div>
 </div>
 
-<div class = "imgHold">
+<div class = "imgHold"><div>
 <img data-src = "https://assets.playground.xyz/JWhitmore/aa6ca25e_me.jpg" />
-</div>
+</div></div>

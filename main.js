@@ -33,8 +33,7 @@ const app = document.querySelector('#app')
 // Ensure initial content is loaded first
 window.onload = () => {
   console.warn('Initial content loaded');
-  svgCleanUp()
-  returnDrawn()
+  
 };
 
 
@@ -44,47 +43,21 @@ window.onload = () => {
 setupLoader()
 async function setup() {
 // wait for dom generation
-await init(app)
+  await init(app)
+  app.style.transition = 'all 0.5s'
+  app.style.opacity = 1
 
 
 
 
-app.style.transition = 'all 0.5s'
-app.style.opacity = 1
+  const updateBackgroundPosition = () => {
+    const scrollTop = window.pageYOffset;
 
-
-
-window.addEventListener("resize", debounce);
-
-let resizeWatch = null
-let resizing = false
-function debounce(event) {
-  clearTimeout(resizeWatch)
-  if(!resizing) resizeClean()
-  resizeWatch = setTimeout(resize, 200)
-}
-
-function resize() {
-  resizing = false
-  returnDrawn()
-}
-
-function resizeClean() {
-  resizing = true
-  svgCleanUp()
-}
-
-
-
-
-const updateBackgroundPosition = () => {
-  const scrollTop = window.pageYOffset;
-
-  document.querySelectorAll('.edgeGhost').forEach(bgs => {
-    bgs.style.backgroundPosition = `0px ${-scrollTop}px`;
-  });
-};
-window.addEventListener('scroll', updateBackgroundPosition);
+    document.querySelectorAll('.edgeGhost').forEach(bgs => {
+      bgs.style.backgroundPosition = `0px ${-scrollTop}px`;
+    });
+  };
+  window.addEventListener('scroll', updateBackgroundPosition);
 }
 
 setup()

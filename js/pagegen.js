@@ -1,8 +1,9 @@
 import { gsap } from "gsap";
 
 import { contactInfo, domEle } from "../main";
-import { studyHandler, caseStudyGen } from './caseStudy.js'
+import { caseStudyGen } from './caseStudy.js'
 import { loadResolver } from "./loadhandler.js";
+import { returnDrawn, svgCleanUp } from "./svgDraw.js";
 
 Object.defineProperty(String.prototype, 'capitalise', {
   value: function() {
@@ -230,6 +231,7 @@ export async function init(app) {
 //  const testSec = genSec('testimonial')
   const contactSec = await genSec('contact')
 
+
   // nav elements
   const navCurrent = navSec.querySelector('#navCurrent')
   const sectionNav = navSec.querySelector('#sectionNav')
@@ -263,6 +265,8 @@ export async function init(app) {
 
   })
 
+  // img transition function
+  imgTrans()
 
   app.appendChild(navSec)
   app.appendChild(wrapper)
@@ -354,7 +358,6 @@ export async function init(app) {
 
   const sectionChange = (entries, sectionObserver) => {
     entries.forEach(entry => {
-      console.log(entry.target.id)
       if (entry.isIntersecting) {
         let move = 100
         const navHeader = document.querySelector('#navHead')
@@ -373,10 +376,7 @@ export async function init(app) {
           break;
         }
 
-        // gsap.to(navTitleForm, {
-        //   y:`-120%`,
-        //   duration:2
-        // })
+
         navTitleForm.forEach((ele,i) => {
           gsap.killTweensOf(ele)
           gsap.to(ele, {
@@ -391,19 +391,6 @@ export async function init(app) {
           })
         })
 
-        // gsap.to(document.querySelectorAll('#navCurrent div'), {
-        //   y:`-${move*100}%`,
-        //   duration:0.4
-        // })
-
-        // gsap.to(document.querySelectorAll('#navCurrent div'), {
-        //   opacity:0,
-        //   duration:0.2
-        // })
-        // gsap.to(document.querySelectorAll('#navCurrent div')[move], {
-        //   opacity:1,
-        //   duration:0.4
-        // })
 
 
         gsap.to(navLetterForm, {
@@ -430,8 +417,8 @@ export async function init(app) {
 
   const sectionObserver = new IntersectionObserver(sectionChange, {
     root: null, // Use the viewport as the container
-    rootMargin: '-50% 0px -0% 0px',
-    threshold: 0.01 // Trigger when 10% of the target is visible
+    rootMargin: '-50% 0px -20% 0px',
+    threshold: 0.1 // Trigger when 10% of the target is visible
   });
   sectionObserver.observe(headerSec.dom)
   sectionObserver.observe(csSec.dom)
@@ -486,11 +473,29 @@ export async function init(app) {
 
   })  
 
-  setTimeout(()=>{
 
   loadCases(csSec)
 
-  },0)
+  returnDrawn()
+  window.addEventListener("resize", debounce);
+
+  let resizeWatch = null
+  let resizing = false
+  function debounce(event) {
+    clearTimeout(resizeWatch)
+    if(!resizing) resizeClean()
+    resizeWatch = setTimeout(resize, 200)
+  }
+  
+  function resize() {
+    resizing = false
+    returnDrawn()
+  }
+  
+  function resizeClean() {
+    resizing = true
+    svgCleanUp()
+  }
 
 
 }
@@ -523,3 +528,223 @@ async function loadCases(cs) {
 
 
 
+const blockani = {
+
+}
+const blockChange = (entries, sectionObserver) => {
+  console.log(blockani)
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+
+      blockani[entry.target.dataset.blockani].enter()
+      // gsap.to(entry.target, {
+      //   opacity:1,
+      //   duration:0.5
+      // })
+    } else {
+      blockani[entry.target.dataset.blockani].leave()
+
+    }
+  })
+}
+
+const blockObserver = new IntersectionObserver(blockChange, {
+  root: null, // Use the viewport as the container
+  rootMargin: '-30% 0px -30% 0px',
+  threshold: 0.1 // Trigger when 10% of the target is visible
+});
+
+class blockAniBuild {
+  constructor() {
+    this.tl = gsap.timeline({paused: true, onStart:()=>{ this.img.forEach(i =>{ i.style.transition = 'none'; i.style.opacity = 0; }) }, onComplete: ()=>{ this.img.forEach(i =>{ i.style.transition = 'opacity 0.5s'; i.style.opacity = 1; grungeMask(i) }) } })
+    this.firstPlay = true
+  }
+
+  enter() {
+    this.tl.pause()
+    this.tl.timeScale(1)
+    this.tl.play()
+    if(this.firstPlay) this.firstPlay = false
+  }
+
+  leave() {
+    if(this.firstPlay) return
+    this.tl.pause()
+    this.tl.timeScale(1)
+    this.tl.reverse()
+  }
+
+
+}
+
+export function setupblockAni() {
+  if(!blockani.intro) {
+     const dom = document.querySelector('#introduction .body')
+     dom.setAttribute('data-blockani', 'intro')
+      
+     blockani.intro = new blockAniBuild()
+     blockani.intro.img = [dom.querySelector('.imgHold img')]
+     const tl = blockani.intro.tl
+     tl.fromTo(dom.querySelectorAll('#introInfo > *:not(svg)'), {
+      filter: 'blur(5px)',
+      opacity: 0,
+     }, {
+      filter: 'blur(0px)',
+      opacity: 1,
+      duration:0.5,
+     },0.25)
+     .fromTo(dom.querySelectorAll('.imgHold div'), {
+      filter: 'blur(5px)',
+      opacity: 0,
+     }, {
+      filter: 'blur(0px)',
+      opacity: 1,
+      duration:0.5,
+     },0.25)
+
+
+     blockObserver.observe(dom)
+  }
+
+  if(!blockani.study1) {
+    const domTree = document.querySelectorAll('#case_studies .study')
+
+    domTree.forEach((dom,i) => {
+      dom.setAttribute('data-blockani', `study${i}`)
+      blockani[`study${i}`] = new blockAniBuild()
+      blockani[`study${i}`].img = [dom.querySelector('.imgHold img')]
+
+      const tl = blockani[`study${i}`].tl
+      tl.fromTo(dom.querySelectorAll('.title, .meta, .info > *:not(svg)'), {
+       filter: 'blur(5px)',
+       opacity: 0,
+      }, {
+       filter: 'blur(0px)',
+       opacity: 1,
+       duration:0.5,
+      },0.6)
+      .fromTo(dom.querySelectorAll('.imgHold div'), {
+       filter: 'blur(5px)',
+       opacity: 0,
+      }, {
+       filter: 'blur(0px)',
+       opacity: 1,
+       duration:0.5,
+      },0)
+
+    
+      blockObserver.observe(dom)      
+
+    })
+  }
+
+  if(!blockani.contact) {
+    const dom = document.querySelector('#contact .body')
+    dom.setAttribute('data-blockani', 'contact')
+     
+    blockani.contact = new blockAniBuild()
+    blockani.contact.img = [dom.querySelector('.imgHold img')]
+    const tl = blockani.contact.tl
+    tl.fromTo(dom.querySelectorAll('h1, a'), {
+     filter: 'blur(5px)',
+     opacity: 0,
+    }, {
+     filter: 'blur(0px)',
+     opacity: 1,
+     duration:0.5,
+    },0.25)
+    .fromTo(dom.querySelectorAll('.imgHold div'), {
+     filter: 'blur(5px)',
+     opacity: 0,
+    }, {
+     filter: 'blur(0px)',
+     opacity: 1,
+     duration:0.5,
+    },0.25)
+
+
+    blockObserver.observe(dom)
+ }  
+}
+
+const iTrans = [] 
+function imgTrans() {
+  const div = document.createElement('div')
+  div.innerHTML = `
+<img data-src="https://assets.playground.xyz/JWhitmore/448d6f0e_spritesheetFixed.png" />
+`
+
+// <img data-src="https://assets.playground.xyz/JWhitmore/8b178c3e_Sequence-0100.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/d43b9b5c_Sequence-0101.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/7dca50ab_Sequence-0102.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/df3cdabf_Sequence-0103.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/4d1c7b2e_Sequence-0104.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/421822f8_Sequence-0105.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/edb6856e_Sequence-0106.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/097977d1_Sequence-0107.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/16f2786d_Sequence-0108.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/2048ccc3_Sequence-0109.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/6bcb023e_Sequence-0110.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/af0c9013_Sequence-0111.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/758d2b5e_Sequence-0112.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/b24f6169_Sequence-0113.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/a0f63765_Sequence-0114.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/bd487baa_Sequence-0115.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/d60e93c5_Sequence-0116.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/e8a1f196_Sequence-0117.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/9738aca1_Sequence-0118.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/a4ec165a_Sequence-0119.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/62377001_Sequence-0120.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/45bea221_Sequence-0121.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/fa8dc596_Sequence-0122.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/2c2186f1_Sequence-0123.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/1206a486_Sequence-0124.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/b4e862ee_Sequence-0125.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/032a3af5_Sequence-0126.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/862bad2c_Sequence-0127.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/9c4aa7b8_Sequence-0128.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/8d2176bc_Sequence-0129.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/6c2b9e68_Sequence-0130.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/16dcc55f_Sequence-0131.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/731f5a25_Sequence-0132.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/90993289_Sequence-0133.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/64389dbb_Sequence-0134.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/5eed0196_Sequence-0135.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/fcc21a04_Sequence-0136.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/61faeae0_Sequence-0137.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/5099d513_Sequence-0138.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/d9f4c1e5_Sequence-0139.jpg" />
+// <img data-src="https://assets.playground.xyz/JWhitmore/0fda420f_Sequence-0140.jpg" /> 
+
+
+  div.querySelectorAll('img').forEach(img => {
+    loadResolver.toLoad.push(img)
+    iTrans.push(img)
+  })
+
+}
+
+function grungeMask(img) {
+
+  // 18 frames
+  const frames = 18
+  let i = 0;
+  const maskW = iTrans[0].naturalWidth
+  const maskH = iTrans[0].naturalHeight
+  const ratio = (maskW/frames)/maskH
+  console.log(ratio)
+  img.style.maskImage = `url(${iTrans[0].src})`
+  img.style.maskMode = 'luminance'
+  img.style.maskSize = 'auto 110%'
+  img.style.maskPosition = `0px 0%`
+  const h = img.offsetHeight * 1.1
+  console.log(h)
+  const interval = setInterval(()=>{
+    i++    
+    img.style.maskPosition = `${(i * -h*ratio)}px 0%`
+    if(i == frames) {
+      clearInterval(interval)
+      img.style.maskImage = 'unset'
+    }
+  },20)
+ }
