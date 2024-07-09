@@ -296,7 +296,7 @@ function genSkirt(dom, lineup, stacked, pos, h, vari, aniOffset) {
     }
 
     if(stacked == 'right' || stacked == 'both') {
-        const modH = h+h*Math.random()
+        const modH = h+h*Math.random()/2
         const rsvg = sv('svg', {
             viewBox: `0 0 12 ${modH}`,
             style: `position: absolute; pointer-events:none; margin-top:${bb - modH/2 - 25}px; margin-left: ${dom.offsetWidth - 12}px; width:12px; height:${modH*2}px`        
@@ -414,12 +414,9 @@ function cornerPieces(dom, wob, corners) {
 
 export function svgCleanUp() {
     svgID = 0
-    console.log(svgEles)
-    console.log(svgAniObserver.entries)
     for (const key in svgEles) {
         if (svgEles.hasOwnProperty(key)) {
             const svg = svgEles[key].ele
-            console.log(svg)
             try {
                 svgAniObserver.unobserve(svg)
 
@@ -489,26 +486,6 @@ export function returnDrawn() {
     // append page overlay
     app.appendChild(page)
 
-
-
-    // draw lines on svg
-//    const navHeaderSVG = document.querySelector('#navHeaderSVG')
-    // svgEles['navHeaderSVG'] = {
-    //     ani: gsap.timeline({paused: true})
-    // }
-    // svgAniObserver.observe(navHeaderSVG)
-    // const navHeaderLines = navHeaderSVG.querySelectorAll('line')
-    // const navHeaderLinesArray = []
-    // navHeaderLines.forEach(line => {
-    //     const linePath = sv('path', {
-    //         fill: styles.fill,
-    //         d: variantData(line, 1, 1, 0.25)
-    //     })
-    //     maskLine(linePath, line, navHeaderSVG, true)
-    //     navHeaderLinesArray.push(line)
-    // })
-    // aniStroke(navHeaderSVG, navHeaderLinesArray, 0.5, 0.25, 0.25)
-    // svgEles['navHeaderSVG'].ani.play()
     
 
 
@@ -523,6 +500,7 @@ export function returnDrawn() {
 
 
 
+    generateUnderline(document.querySelector('#introInfo .infoArea'), document.querySelector('#introInfo'), 4, 0.7, 'center')
 
 
 
@@ -552,22 +530,23 @@ export function returnDrawn() {
 
         cornerPieces(dom.querySelector('.imgHold'), 40, randomCornerObject(0, [0.4,0.2]))
 
+        generateUnderline(dom.querySelector('.infoArea h1'), dom.querySelector('.infoArea'), 'max', 0.5 - (0.3*Math.random()), 'top')
+
         const infoRandom = Math.random()
         if(infoRandom > 0.9) {
             cornerPieces(dom.querySelector('.info'), 40, {
-                bl: [0.3 + 0.2*Math.random(), 0.3 + 0.2*Math.random()],
-                br: [0.3 + 0.2*Math.random(), 0.3 + 0.2*Math.random()]
+                bl: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()],
+                br: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()]
             })
         } else if(infoRandom > 0.6) {
             cornerPieces(dom.querySelector('.info'), 40, {
-                bl: [0.3 + 0.2*Math.random(), 0.3 + 0.2*Math.random()],
+                bl: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()],
             })       
         } else if(infoRandom > 0.2) {
             cornerPieces(dom.querySelector('.info'), 40, {
-                br: [0.3 + 0.2*Math.random(), 0.3 + 0.2*Math.random()]
+                br: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()]
             })
         } else {
-            console.log('none')
         }
 
     })
@@ -588,6 +567,8 @@ export function returnDrawn() {
 
 
     cornerPieces(document.querySelector('#contact .imgHold'), 40, randomCornerObject([0.2,0.2], [0.2,0.2], [1, 1, 0.7, 0.1]))
+    generateUnderline(document.querySelector('#contact .contactDetails h1'), document.querySelector('#contact .contactDetails'), 'max', 0.7 - (0.3*Math.random()), 'top')
+
 
 
 
@@ -626,51 +607,6 @@ async function loadSVG(url, container) {
       console.error('There has been a problem with your fetch operation:', error);
     }
   }
-
-
-export async function processSVG() {
-
-    const svgHold = document.createElement('div')
-    document.querySelector('#wrapper').appendChild(svgHold)
-    svgHold.style.width = '100%'
-    svgHold.style.height = 'auto'
-    svgHold.id = 'svgTest'
-      // Load the SVG into the container
-    await loadSVG('assets/fonts/03.svg', svgHold);
-    
-    console.log(svgHold)
-
-    const defs = svgHold.querySelector('defs')
-    svgHold.querySelectorAll('#mask > g').forEach((l, li) => {
-        const className = l.classList.value
-        const ll = svgHold.querySelector(`#line .${className}`)
-        l.querySelectorAll(':scope > *:not(g)').forEach((l1, li1) => {
-            let corr = document.querySelector(`#line .${className}`).children[getChildIndex(l1)]
-            const id = `m${className}-${li1}`
-            corr.setAttribute('mask', `url(#${id})`)
-            const mask = sv('mask')
-            mask.id = id
-            mask.appendChild(l1.cloneNode(true))
-            defs.appendChild(mask)
-        })
-
-        
-
-        l.querySelectorAll(':scope > g').forEach((l1, li1) => {
-            l1.querySelectorAll(':scope > *').forEach((l2, li2) => {
-                console.log('l2p', getChildIndex(l2.parentNode))
-                console.log('l2', getChildIndex(l2))
-            })
-        })
-    })
-}
-
-
-function getChildIndex(child) {
-    return [...child.parentNode.children].findIndex(node => node === child);
-  }
-  
-
 
 
 
@@ -880,3 +816,177 @@ function calculateLineToBounds(x, y, angle, bx1, by1, bx2, by2) {
   // Return the two closest endpoints
   return [endpoints[0], endpoints[1]];
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function generateUnderline(txt, dom, lines, decay,  pos, offset) {
+    pos = pos || 'center'
+    offset = offset || 0
+    lines = lines || 1
+    decay = 1 - decay || 0.2
+    // styles needed
+    const style = window.getComputedStyle(txt)
+    const lineHeight = parseFloat(style.lineHeight)
+    const fontSize = parseFloat(style.fontSize)
+    const elementHeight = txt.offsetHeight
+    const numberOfLines = Math.round(elementHeight / lineHeight)
+
+    const h = txt.offsetHeight
+    const w = txt.offsetWidth + 40
+
+    const lineCount = h/lineHeight
+    if(lines == 'max') lines = lineCount
+
+
+    let bb = txt.getBoundingClientRect().y - dom.parentElement.getBoundingClientRect().y
+    const svg = sv('svg',{
+        viewBox: `0 0 ${w} ${h}`,
+        style: `position: absolute; pointer-events:none; top:0; margin-top:${bb}px; margin-left:-20px; width:${w}px; height:${h}px;`        
+    })
+
+
+    let posNo = 0
+    let decayDir = 0
+    switch(pos) {
+        case 'top':
+            posNo += offset
+        break;
+        case 'bottom':
+            posNo = lineCount - lines + offset
+            decayDir = lines-1
+        break;
+        default:
+            posNo = Math.ceil(lineCount/2) - Math.ceil(lines/2) + offset
+            decayDir = Math.floor((lines-1)/2)
+    }
+    const initalY = fontSize + 5 + posNo * lineHeight
+    const lineEle = []
+    for(let i = 0; i < lines; i++) {
+        const line = sv('line',{
+            x1: -20 + (Math.random()*50),
+            y1: initalY + i*lineHeight,
+            x2: w - (w*decay * Math.abs(i-decayDir)),
+            y2: initalY + i*lineHeight,
+            stroke: 'white',
+            'stroke-width':3,
+            'stroke-linecap':'round',
+        })
+
+        const path = sv('path', {
+            fill:styles.fill,
+            d: variantData(line, 1, 1, 0.25)
+        })
+        maskLine(path, line, svg)
+        lineEle.push(line)
+    }
+    aniStroke(svg, lineEle, 0.25, 0.5, 0.2)
+    dom.prepend(svg)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export async function processSVG() {
+
+    const svgHold = document.createElement('div')
+    document.querySelector('#wrapper').appendChild(svgHold)
+    svgHold.style.width = '100%'
+    svgHold.style.height = 'auto'
+    svgHold.id = 'svgTest'
+      // Load the SVG into the container
+    await loadSVG('assets/fonts/03.svg', svgHold);
+    
+
+    const defs = svgHold.querySelector('defs')
+    svgHold.querySelectorAll('#mask > g').forEach((l, li) => {
+        const className = l.classList.value
+        const ll = svgHold.querySelector(`#line .${className}`)
+        l.querySelectorAll(':scope > *:not(g)').forEach((l1, li1) => {
+            let corr = document.querySelector(`#line .${className}`).children[getChildIndex(l1)]
+            const id = `m${className}-${li1}`
+            corr.setAttribute('mask', `url(#${id})`)
+            const mask = sv('mask')
+            mask.id = id
+            mask.appendChild(l1.cloneNode(true))
+            defs.appendChild(mask)
+        })
+
+        
+
+        l.querySelectorAll(':scope > g').forEach((l1, li1) => {
+            l1.querySelectorAll(':scope > *').forEach((l2, li2) => {
+                console.log('l2p', getChildIndex(l2.parentNode))
+                console.log('l2', getChildIndex(l2))
+            })
+        })
+    })
+}
+
+
+function getChildIndex(child) {
+    return [...child.parentNode.children].findIndex(node => node === child);
+  }
+  

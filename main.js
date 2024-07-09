@@ -7,7 +7,7 @@ import { gsap } from "gsap"
 
 import { init } from './js/pagegen.js'
 import { studyHandler, caseStudyGen } from './js/caseStudy.js'
-import { returnDrawn, svgCleanUp, processSVG } from './js/svgDraw.js'
+import { returnDrawn, svgCleanUp } from './js/svgDraw.js'
 import { setupLoader, loadResolver } from './js/loadhandler.js'
 
 
@@ -61,9 +61,6 @@ async function setup() {
 }
 
 setup()
-
-// processSVG()
-
 
 
 

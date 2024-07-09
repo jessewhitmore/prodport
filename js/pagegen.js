@@ -190,6 +190,7 @@ function ve(to, name, style, type) {
 
         selector.innerHTML = mdText;
         selector.querySelectorAll('img').forEach(img => {
+          img.setAttribute('loadhandled',true)
           loadResolver.toLoad.push(img)
       })
     
@@ -226,10 +227,10 @@ function ve(to, name, style, type) {
 export async function init(app) {
   // set-up 
 
-  const headerSec = await genSec('introduction')
-  const csSec = await genSec('case_studies')
+  const headerSec = genSec('introduction')
+  const csSec = genSec('case_studies')
 //  const testSec = genSec('testimonial')
-  const contactSec = await genSec('contact')
+  const contactSec = genSec('contact')
 
 
   // nav elements
@@ -270,14 +271,21 @@ export async function init(app) {
 
   app.appendChild(navSec)
   app.appendChild(wrapper)
-  // ----------------------------------------------------------------------- DOM ATTACHED
-  
+ 
+  // obj loop
+  const promises = domEle.map(obj => {
+    return insertMDtext(obj.target, `md/${obj.targetName}.md`);
+  });
+
+  await Promise.all(promises);
+
+   // ----------------------------------------------------------------------- DOM ATTACHED
+
   const introIcons = []
   for(const props in contactInfo) {
     const p = contactInfo[props]
     let link = document.createElement('a')
     link.id = props
-    link.innerHTML = `<span>${(props == 'cv') ? 'cv' : p}</span>`
     const im = new Image()
     im.src = `assets/${props}logo.svg`
 
@@ -286,7 +294,7 @@ export async function init(app) {
         link.innerHTML = `<span>linkedin</span>`       
       break;      
       case 'cv':
-        link.innerHTML = `<span>cv</span>`
+        link.innerHTML = `<span>Curriculum Vitae</span>`
       break;
       default:
       link.innerHTML = `<span>${p}</span>`
@@ -317,21 +325,18 @@ export async function init(app) {
 
 
   }
-  
-
-
-
-  // obj loop
-  const promises = domEle.map(obj => {
-    return insertMDtext(obj.target, `md/${obj.targetName}.md`);
-  });
-
-  await Promise.all(promises);
 
   introIcons.forEach(icon => {
     contactSec.dom.querySelector('.infoArea').appendChild(icon.cloneNode(true))
-    icon.querySelector('span').remove()
+    const text = icon.querySelector('span')
+    headerSec.dom.querySelector('.iconsText').appendChild(text)
     headerSec.dom.querySelector('.icons').appendChild(icon)
+    icon.addEventListener('mouseover',()=>{
+      text.style.opacity = 1
+    })
+    icon.addEventListener('mouseleave',()=>{
+      text.style.opacity = 0
+    })    
   })
 
   const navTitleForm = document.querySelectorAll('.navTitleText')
@@ -475,17 +480,18 @@ export async function init(app) {
 
 
   loadCases(csSec)
-  returnDrawn()
-  setTimeout(setupblockAni,50)
+  setTimeout(returnDrawn,500)
+  setTimeout(setupblockAni,250)
 
   window.addEventListener("resize", debounce);
 
   let resizeWatch = null
   let resizing = false
   function debounce(event) {
+    console.log(window.innerWidth * 0.008)
     clearTimeout(resizeWatch)
     if(!resizing) resizeClean()
-    resizeWatch = setTimeout(resize, 200)
+    resizeWatch = setTimeout(resize, 500)
   }
   
   function resize() {
@@ -511,20 +517,26 @@ export async function init(app) {
 async function loadCases(cs) {
   const studies = cs.dom.querySelectorAll('.study')
   const study1 = await caseStudyGen(app, studies[0])
-  studies[0].addEventListener('click', ()=>{
-    study1.populate(studies[0].querySelector('.imgHold'))
+  studies[0].querySelectorAll('.imgHold, .cta').forEach(ele => {
+    ele.addEventListener('click', ()=>{
+      study1.populate()
+    })
   })
   
   const study2 = await caseStudyGen(app, studies[1])
-  studies[1].addEventListener('click', ()=>{
-    study2.populate(studies[1].querySelector('.imgHold'))
+  studies[1].querySelectorAll('.imgHold, .cta').forEach(ele => {
+    ele.addEventListener('click', ()=>{
+      study2.populate()
+    })
   })
-  
-  
+
   const study3 = await caseStudyGen(app, studies[2])
-  studies[2].addEventListener('click', ()=>{
-    study3.populate(studies[2].querySelector('.imgHold'))
-  })  
+  studies[2].querySelectorAll('.imgHold, .cta').forEach(ele => {
+    ele.addEventListener('click', ()=>{
+      study3.populate()
+    })
+  })
+
 }
 
 
@@ -533,7 +545,6 @@ const blockani = {
 
 }
 const blockChange = (entries, sectionObserver) => {
-  console.log(blockani)
   entries.forEach(entry => {
     if (entry.isIntersecting) {
 
@@ -544,7 +555,6 @@ const blockChange = (entries, sectionObserver) => {
       // })
     } else {
       blockani[entry.target.dataset.blockani].leave()
-
     }
   })
 }
@@ -558,7 +568,24 @@ const blockObserver = new IntersectionObserver(blockChange, {
 class blockAniBuild {
   constructor() {
     this.grunge = false
-    this.tl = gsap.timeline({paused: true, onStart:()=>{ this.img.forEach(i =>{ i.style.transition = 'none'; i.style.opacity = 0; this.grunge = true  }) }, onComplete: ()=>{ this.img.forEach(i =>{ i.style.transition = 'opacity 0.5s'; i.style.opacity = 1; if(this.grunge){ grungeMask(i); this.grunge = false } }) } })
+    this.tl = gsap.timeline({paused: true, 
+      onStart:()=>{ 
+        this.img.forEach(i =>{ 
+          i.style.transition = 'none'; i.style.opacity = 0; 
+          if(i.hasAttribute('src')) this.grunge = true  
+        }) 
+      }, 
+      onComplete: ()=>{ 
+        this.img.forEach(i =>{ 
+          i.style.transition = 'opacity 0.5s'; 
+          if(i.hasAttribute('src')) {
+            i.style.opacity = 1; 
+            if(this.grunge){ 
+              grungeMask(i); this.grunge = false } 
+          }
+        }) 
+      } 
+    })
     this.firstPlay = true
   }
 
@@ -669,55 +696,20 @@ export function setupblockAni() {
  }  
 }
 
+
+
+
+
+
+
+
+
 const iTrans = [] 
 function imgTrans() {
   const div = document.createElement('div')
   div.innerHTML = `
 <img data-src="https://assets.playground.xyz/JWhitmore/448d6f0e_spritesheetFixed.png" />
 `
-
-// <img data-src="https://assets.playground.xyz/JWhitmore/8b178c3e_Sequence-0100.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/d43b9b5c_Sequence-0101.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/7dca50ab_Sequence-0102.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/df3cdabf_Sequence-0103.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/4d1c7b2e_Sequence-0104.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/421822f8_Sequence-0105.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/edb6856e_Sequence-0106.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/097977d1_Sequence-0107.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/16f2786d_Sequence-0108.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/2048ccc3_Sequence-0109.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/6bcb023e_Sequence-0110.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/af0c9013_Sequence-0111.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/758d2b5e_Sequence-0112.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/b24f6169_Sequence-0113.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/a0f63765_Sequence-0114.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/bd487baa_Sequence-0115.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/d60e93c5_Sequence-0116.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/e8a1f196_Sequence-0117.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/9738aca1_Sequence-0118.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/a4ec165a_Sequence-0119.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/62377001_Sequence-0120.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/45bea221_Sequence-0121.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/fa8dc596_Sequence-0122.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/2c2186f1_Sequence-0123.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/1206a486_Sequence-0124.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/b4e862ee_Sequence-0125.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/032a3af5_Sequence-0126.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/862bad2c_Sequence-0127.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/9c4aa7b8_Sequence-0128.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/8d2176bc_Sequence-0129.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/6c2b9e68_Sequence-0130.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/16dcc55f_Sequence-0131.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/731f5a25_Sequence-0132.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/90993289_Sequence-0133.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/64389dbb_Sequence-0134.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/5eed0196_Sequence-0135.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/fcc21a04_Sequence-0136.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/61faeae0_Sequence-0137.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/5099d513_Sequence-0138.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/d9f4c1e5_Sequence-0139.jpg" />
-// <img data-src="https://assets.playground.xyz/JWhitmore/0fda420f_Sequence-0140.jpg" /> 
-
 
   div.querySelectorAll('img').forEach(img => {
     loadResolver.toLoad.push(img)

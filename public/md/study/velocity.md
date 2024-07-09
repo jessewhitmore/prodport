@@ -1,17 +1,17 @@
-LEFT
+NONE
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/fc108cd5_slide1-1.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/633915c0_slide1-2.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/512f9dc1_slide2-1.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/e6c7f210_slide2-2.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/1c5450f9_slide3-1.png" />
@@ -28,14 +28,14 @@ LEFT
 <img data-src = "https://assets.playground.xyz/JWhitmore/0cafcdac_slide4-2.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/b5c6c872_slide4-1.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/370f6e83_slide4-3.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/e9315944_slide5-1.png" />
@@ -44,7 +44,7 @@ LEFT
 <img data-src = "https://assets.playground.xyz/JWhitmore/e5171305_slide5-4.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/1e1060bd_slide6-1.png" />
@@ -57,7 +57,7 @@ LEFT
 <img data-src = "https://assets.playground.xyz/JWhitmore/7214aa7d_slide6-8.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/262f9114_slide7-1.png" />
@@ -69,7 +69,7 @@ LEFT
 <img data-src = "https://assets.playground.xyz/JWhitmore/9a092d13_slide7-7.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/a8a1e75e_slide8-1.png" />
@@ -97,7 +97,7 @@ LEFT
 <img data-src = "https://assets.playground.xyz/JWhitmore/edafa027_slide9-3.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/5da0fc59_slide10-6.png" />
@@ -111,7 +111,7 @@ LEFT
 <img data-src = "https://assets.playground.xyz/JWhitmore/edafa027_slide9-3.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/3c506409_slide12-1.png" />
@@ -135,7 +135,7 @@ LEFT
 <img data-src = "https://assets.playground.xyz/JWhitmore/0ff2e24a_slide13-4.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/79e882f2_slide13-1.png" />
@@ -144,7 +144,7 @@ LEFT
 <img data-src = "https://assets.playground.xyz/JWhitmore/5557c5a9_slide13-6.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/13e4200b_logo.png" />
 
------ LEFT
+----- NONE
 
 <img data-src = "https://assets.playground.xyz/JWhitmore/888509f2_bg.png" />
 <img data-src = "https://assets.playground.xyz/JWhitmore/3b398389_slide14-1.png" />

@@ -1,10 +1,12 @@
 <div id = "introInfo">
 <h1>Jesse Whitmore</h1>
 
-<div>
+<div class = "infoArea">
 I love solving puzzles and connecting dots. With 7+ years of making beautiful, functional, and valuable tech with like minded product people — let's solve your problems together.
 </div>
-<div class = "icons"></div>
+<div class = "icons">
+    <div class = "iconsText"></div>
+</div>
 </div>
 <div>
 </div>

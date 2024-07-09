@@ -45,32 +45,39 @@ function checkImagesLoaded() {
         if(img.src.length > 0) {
             img.setAttribute('loadhandled',true)
         } else {
+            img.style.display = 'none'
+            if(!img.hasAttribute('loadhandled')) loadResolver.toLoad.push(img)
             img.setAttribute('loadhandled',true)
-            img.style.opacity = 0
-            img.style.visibility = 'hidden'
-            loadResolver.toLoad.push(img)
-        }
-        if(images.length-1 == i) {
-            loadNext()
+            
         }
     })
+
+    if(!loadResolver.running) {
+        const pushedArray = []
+        loadResolver.toLoad.forEach(i => {
+            pushedArray.push(i.dataset.src.split('/').reverse()[0])
+        })
+        loadNext()
+    }
 
 }
 
 
 function loadNext() {
     const tl = loadResolver.toLoad
-    if(tl.length == 0) return;
-    loadResolver.running
-    const toload = tl.shift()
-    toload.onload = loadedIMG(toload)
-    toload.src = toload.dataset.src
-}
-
-function loadedIMG(img) {
-    if(img.style.visibility == 'hidden') img.style.visibility = 'visible'
-    grungeMask(img)
-    img.style.opacity = 1
-    loadNext()
+    loadResolver.running = (tl.length == 0) ? false : true;
+    if(loadResolver.running == false) return;
+    const img = tl.shift()
+    const tempimg = new Image()
+    tempimg.onload = () => {
+        img.src = img.dataset.src
+        if(img.hasAttribute('nogrunge')) {
+            img.style.display = 'block'
+            img.style.opacity = 1
+            grungeMask(img)
+        }
+        loadNext()
+    }
+    tempimg.src = img.dataset.src
 }
 

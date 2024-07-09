@@ -52,6 +52,7 @@ export function studyHandler(study) {
 export async function caseStudyGen(app, study) {
     
     const studySlide = new slideInstance()
+    studySlide.ele = study.querySelector('.imgHold')
     studySlide.imgHold = study.querySelector('.imgHold img').dataset.src
     let studyName = 'null'
     study.classList.forEach(v => {if(v !== 'study') studyName = v})
@@ -79,6 +80,11 @@ class slideInstance {
         this.handleKeypress = this.keypress.bind(this)
         this.handleDepop = this.depopulate.bind(this)
         this.tl = []
+        this.resize = window.addEventListener('resize', () => {
+            document.querySelectorAll('.controls').forEach(ele => {
+                ele.style.width = document.querySelector('.slidesWrapper').offsetWidth + 'px' 
+            })
+        })
     }
 
     ve(to, name, style, type) {
@@ -103,6 +109,7 @@ class slideInstance {
             element.style[key] = value
         }
     }
+
 
     async setup(studyName) {
 
@@ -163,6 +170,8 @@ class slideInstance {
                     slide.style.visibility = 'hidden'
                 }
                 slide.querySelectorAll('img').forEach(img => {
+                    img.setAttribute('loadhandled',true)
+                    img.setAttribute('nogrunge',true)
                     loadResolver.toLoad.push(img)
                 })
             }
@@ -176,26 +185,54 @@ class slideInstance {
         } catch(e) {}
         
         this.wheelOpt = supportsPassive ? { passive: false } : false;
-        
-            
+
     }
 
-    populate(ele) {
+    populate() {
 
         this.index = 0
-        this.fromEle = ele
+        const ele = this.ele
+
+        const checkSRCS = this.slideshow.querySelector('img:not([src])')
+        if(checkSRCS) {
+            this.loading = true
+            this.slideshow.querySelector('.slides').classList.add('loading')
+            const promiseArray = []
+            this.slideshow.querySelectorAll('img:not([src])').forEach(img => {
+                loadResolver.toLoad = loadResolver.toLoad.filter(i => i !== img)
+                const loadPromise = new Promise((resolve, reject) => {
+                    img.src = img.dataset.src;        
+                    img.onload = () => {
+                        console.log('loaded', img)
+                        img.style.maskImage = 'unset'
+                        resolve(img);
+                    };
+                    img.onerror = (err) => {
+                        reject(err);
+                    };
+                });   
+                promiseArray.push(loadPromise)            
+            })
+            console.log(promiseArray)
+            Promise.all(promiseArray).then((i)=> {
+                this.loading = false
+                this.slideshow.querySelector('.slides').classList.remove('loading')
+                this.populatedSlideshow.querySelector('.slides').classList.remove('loading')
+                console.log('done loading')
+            })
+
+        }
 
         const slideshow = this.populatedSlideshow = this.slideshow.cloneNode(true)
+
         this.style(slideshow, {
             position:'fixed',
             top:'50px',
-            left:'calc(max(16.667vw, 300px) + 25px)',
+            left:'calc(max(16.667vw, 400px) + 25px)',
             bottom: '50px',
             right: '50px',
             opacity:1
         })
-
-        console.log(this.imgHold)
 
         const transition = this.ve(document.body, 'CStrans', {
             position:'fixed', 
@@ -219,29 +256,61 @@ class slideInstance {
 
         const controlsT = this.ve(slideshow, 'controls', {
             justifyContent: 'flex-end',
-            alignItems: 'center'
+            alignItems: 'flex-end',
+            paddingBottom: '10px'
         })
         slideshow.insertBefore(controlsT, slideshow.querySelector('.slidesWrapper'))
 
         const controlsB = this.ve(slideshow, 'controls', {
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'flex-start',
+            paddingTop: '10px'
         })
 
         const prev = this.prev = this.ve(controlsB, 'prev')
-        prev.innerHTML = `<a href="javascript:void(0)">PREV</a>`
+        prev.innerHTML = `<a href="javascript:void(0)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.01 25.01">
+            <circle style = "fill:#eceded" cx="12.5" cy="12.5" r="11"/>
+            <path style = "fill:#96acb6" d="M12.5,0c6.89,0,12.5,5.61,12.5,12.5s-5.61,12.5-12.5,12.5S0,19.4,0,12.5,5.61,0,12.5,0ZM12.5,22.01c5.24,0,9.5-4.26,9.5-9.5S17.74,3,12.5,3,3,7.26,3,12.5s4.26,9.5,9.5,9.5Z"/>
+            <path style = "fill:#96acb6" d="M6.52,12.96l7.44,4.9c.25.16.53-.08.53-.46v-1.63h1.65c.18,0,.33-.18.33-.4v-5.74c0-.22-.15-.4-.33-.4h-1.65v-1.63c0-.38-.28-.62-.53-.46l-7.44,4.9c-.28.19-.28.73,0,.92Z"/>
+        </svg>
+        </a>`
 
         const count = this.count = this.ve(controlsB, 'count')
-        count.innerHTML = `<span>1</span> / ${this.max}`
+        count.innerHTML = `<span>1</span>&nbsp;/&nbsp;${this.max}`
 
         const next = this.next = this.ve(controlsB, 'next')
-        next.innerHTML = `<a href="javascript:void(0)">NEXT</a>`
+        next.innerHTML = `<a href="javascript:void(0)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.01 25.01">
+            <circle style = "fill:#eceded" cx="12.5" cy="12.5" r="11"/>
+            <path style = "fill:#96acb6" d="M12.5,25.01C5.61,25.01,0,19.4,0,12.5S5.61,0,12.5,0s12.5,5.61,12.5,12.5-5.61,12.5-12.5,12.5ZM12.5,3C7.26,3,3,7.26,3,12.5s4.26,9.5,9.5,9.5,9.5-4.26,9.5-9.5S17.74,3,12.5,3Z"/>
+            <path style = "fill:#96acb6" d="M18.49,12.04l-7.44-4.9c-.25-.16-.53.08-.53.46v1.63h-1.65c-.18,0-.33.18-.33.4v5.74c0,.22.15.4.33.4h1.65v1.63c0,.38.28.62.53.46l7.44-4.9c.28-.19.28-.73,0-.92Z"/>
+        </svg>        
+        </a>`
 
         const download = this.download = this.ve(controlsT, 'download')
-        download.innerHTML = `<a href="download/JWhitmore-${this.studyName}-CaseStudy.pdf" download="JWhitmore-${this.studyName}-CaseStudy.pdf">DOWNLOAD`
+        download.innerHTML = `<a href="download/JWhitmore-${this.studyName}-CaseStudy.pdf" download="JWhitmore-${this.studyName}-CaseStudy.pdf">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.01 25.01">
+            <circle style = "fill: #eceded;" cx="12.5" cy="12.5" r="11"/>
+            <path style = "fill: #96acb6;" d="M12.5,25.01C5.61,25.01,0,19.4,0,12.5S5.61,0,12.5,0s12.5,5.61,12.5,12.5-5.61,12.5-12.5,12.5ZM12.5,3C7.26,3,3,7.26,3,12.5s4.26,9.5,9.5,9.5,9.5-4.26,9.5-9.5S17.74,3,12.5,3Z"/>
+            <path style = "fill: #96acb6;" d="M16.41,18.11h-7.81c-.55,0-1-.45-1-1s.45-1,1-1h7.81c.55,0,1,.45,1,1s-.45,1-1,1Z"/>
+            <path style = "fill: #96acb6;" d="M16.41,10.73h-1.92v-3.67c0-.18-.15-.33-.33-.33h-3.35c-.18,0-.33.15-.33.33v3.67h-1.9c-.3,0-.44.37-.23.57l3.95,3.7c.13.12.33.12.45,0l3.87-3.7c.21-.2.07-.57-.23-.57Z"/>
+        </svg>
+        </a>`
 
         const close = this.close = this.ve(controlsT, 'close')
-        close.innerHTML = `<a href="javascript:void(0)">CLOSE</a>`
+        close.innerHTML = `<a href="javascript:void(0)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.01 25.01">
+            <circle style = "fill: #eceded" cx="12.5" cy="12.5" r="11"/>
+            <path style = "fill: #96acb6" d="M12.5,25.01C5.61,25.01,0,19.4,0,12.5S5.61,0,12.5,0s12.5,5.61,12.5,12.5-5.61,12.5-12.5,12.5ZM12.5,3C7.26,3,3,7.26,3,12.5s4.26,9.5,9.5,9.5,9.5-4.26,9.5-9.5S17.74,3,12.5,3Z"/>
+            <path style = "fill: #96acb6" d="M14.65,12.66l2.44-2.44c.59-.59.59-1.54,0-2.12s-1.54-.59-2.12,0l-2.44,2.44-2.44-2.44c-.59-.59-1.54-.59-2.12,0s-.59,1.54,0,2.12l2.44,2.44-2.44,2.44c-.59.59-.59,1.54,0,2.12.29.29.68.44,1.06.44s.77-.15,1.06-.44l2.44-2.44,2.44,2.44c.29.29.68.44,1.06.44s.77-.15,1.06-.44c.59-.59.59-1.54,0-2.12l-2.44-2.44Z"/>
+        </svg>        
+        </a>`
+
+        document.querySelectorAll('.controls').forEach(ele => {
+            ele.style.width = document.querySelector('.slidesWrapper').offsetWidth + 'px' 
+        })
+
 
 
         const bbEle = ele.getBoundingClientRect()
@@ -275,6 +344,8 @@ class slideInstance {
             }
         })
 
+        close.addEventListener('click', this.handleDepop)
+
         prev.addEventListener('click', this.handlePrev)
         next.addEventListener('click', this.handleNext)
 
@@ -285,11 +356,9 @@ class slideInstance {
         window.addEventListener('mousewheel', this.preventDefault, this.wheelOpt); // modern desktop
         window.addEventListener('touchmove', this.preventDefault, this.wheelOpt); // mobile
 
-        
-
-        close.addEventListener('click', this.handleDepop)
 
         eval(this.script)
+
 
     }
 
@@ -310,7 +379,7 @@ class slideInstance {
       
 
         this.tl.forEach(ani => {ani.kill()}) 
-        this.fromEle.style.opacity = 1
+        this.ele.style.opacity = 1
 
         
         gsap.to(this.populatedSlideshow, {
@@ -354,6 +423,7 @@ class slideInstance {
     }
     
     move(move) {
+        if(this.loading) return;
         if(this.index + move < 0) return
         if(this.index + move > this.max-1) return
 
