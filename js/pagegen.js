@@ -301,13 +301,13 @@ function ve(to, name, style, type) {
 
     let rotX = gsap.utils.random(-20,20)
     let rotZ = gsap.utils.random(-20,20)
-    let moveZ = gsap.utils.random(1000,1800, 100)
+    let moveZ = gsap.utils.random(500,1200, 100)
     card.rotY = rotY += 180 * dir
 
     gsap.to(shadow, {
       keyframes: {
-        rotateX: [0, rotX, 0],
-        rotateZ: [0, rotZ, 0],
+        // rotateX: [0, rotX, 0],
+        // rotateZ: [0, rotZ, 0],
         opacity:[0.2, 0.05, 0.2],
         y:[5,-100,5],
         filter:['blur(5px)','blur(50px)','blur(5px)']
@@ -319,8 +319,8 @@ function ve(to, name, style, type) {
 
     gsap.to(container, {
       keyframes: {
-        rotateX: [0, rotX, 0],
-        rotateZ: [0, rotZ, 0],
+//       rotateX: [0, rotX, 0],
+//       rotateZ: [0, rotZ, 0],
         z: [0, moveZ, 0],
       },
       rotateY: rotY,
