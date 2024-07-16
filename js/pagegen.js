@@ -304,18 +304,18 @@ function ve(to, name, style, type) {
     let moveZ = gsap.utils.random(500,1200, 100)
     card.rotY = rotY += 180 * dir
 
-    gsap.to(shadow, {
-      keyframes: {
-        // rotateX: [0, rotX, 0],
-        // rotateZ: [0, rotZ, 0],
-        opacity:[0.2, 0.05, 0.2],
-        y:[5,-100,5],
-        filter:['blur(5px)','blur(50px)','blur(5px)']
-      },
-      rotateY: rotY,
-      ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
-      duration:0.75
-    })
+    // gsap.to(shadow, {
+    //   keyframes: {
+    //     // rotateX: [0, rotX, 0],
+    //     // rotateZ: [0, rotZ, 0],
+    //     opacity:[0.2, 0.05, 0.2],
+    //     y:[5,-100,5],
+    //     filter:['blur(5px)','blur(50px)','blur(5px)']
+    //   },
+    //   rotateY: rotY,
+    //   ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
+    //   duration:0.75
+    // })
 
     gsap.to(container, {
       keyframes: {
