@@ -349,6 +349,7 @@ img[loaded] {
 
 #case_studies .cta:hover, #case_studies .imgHold:hover ~ .infoArea .cta {
   color:#7cbfd1;
+
 }
 
 #case_studies .cta:hover svg, #case_studies .imgHold:hover ~ .infoArea .cta svg {
@@ -617,19 +618,19 @@ img[loaded] {
   margin-top: -5px!important;
 }
 
-#contact .infoArea {
-  display:flex;
-  flex-direction: column;
-  height:40%;
-  margin-top: 20px;
-  font-size:1.2;
-}
-
 #contact h1 {
   font-size:2.5em;
   line-height:1.2em;
 }
 
+
+#contact .infoArea {
+  display:flex;
+  flex-direction: column;
+  height:40%;
+  margin-top: 20px;
+  font-size:1.2em;
+}
 
 #contact .infoArea a {
   position:relative;
@@ -652,3 +653,358 @@ img[loaded] {
   display:inline-block;
 }
 
+/** ------------------------------------------------------------------------------------------------------------- */
+
+#mobileApp {
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  display: flex;
+  opacity:0;
+  background: url(https://assets.playground.xyz/JWhitmore/59d3d051_paper.jpg) #f9f9f7;
+  perspective: 4000px;
+  perspective-origin: center 300%;
+  overflow: hidden;
+}
+
+#case_studiesMobile .body img {
+  outline:1px solid rgba(149, 171, 181, 0.2);
+  outline-offset: -1px;
+}
+
+.wrapperContainer {
+  position:fixed;
+  width:100%;
+  height:100%;
+  transform-style: preserve-3d;
+}
+
+.backface {
+  transform: scaleX(-1);
+}
+
+.wrapperShadow {
+  position:fixed;
+  box-sizing: border-box;
+  top:50px;
+  left:35px;
+  right: 35px;
+  height: Min(80%, calc(100% - 150px));
+  overflow:hidden;
+  background: #626868;
+  border-radius: 25px;
+  filter: blur(5px);
+  transform:translateY(5px);
+  opacity:0.2;
+  transform-style: preserve-3d;
+}
+
+.mobileWrapper  {
+  position:fixed;
+  box-sizing: border-box;
+  top:50px;
+  left:35px;
+  right: 35px;
+  height: Min(80%, calc(100% - 150px));
+  overflow:hidden;
+  background: url(https://assets.playground.xyz/JWhitmore/59d3d051_paper.jpg) #f9f9f7;
+  border-radius: 25px;
+  transform-style: preserve-3d;
+}
+
+.mobileWrapperThick {
+  position:fixed;
+  box-sizing: border-box;
+  top:50px;
+  left:35px;
+  right: 35px;
+  height: Min(80%, calc(100% - 150px));
+  overflow:hidden;
+  background: url(https://assets.playground.xyz/JWhitmore/59d3d051_paper.jpg) #f9f9f7;
+  border-radius: 25px;
+
+  outline: 5px solid #a6afb2;
+  outline-offset: -5px;
+  transform-style: preserve-3d;
+}
+
+.mobileWrapper > div { 
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  padding:30px;
+  box-sizing: border-box;
+  font-size: 2vh;
+}
+
+#introductionMobile .imgHold {
+  height: 60%;
+  width:100%;
+  box-sizing: border-box;
+}
+
+#introductionMobile #introInfo {
+  margin-top: 2em;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0;
+  gap: 1em;
+  font-size: 1em;
+}
+
+#introductionMobile h1 {
+  font-size: 1.5em;
+} 
+
+/** ------------------------------------------------------------------------------------------------------------- */
+
+#case_studiesMobile h1 {
+  font-size: 1.6em;
+  line-height:1.2em;
+  margin-right:10px;
+}
+
+#case_studiesMobile .meta {
+  position:relative;
+  display:flex;
+  flex-direction: row;
+  text-align:center;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 0.9em;
+  margin-bottom: 1em;
+  margin-top:0.75em;
+  height: 5em;
+}
+
+#case_studiesMobile .data {
+  box-sizing: border-box;
+  padding:2px;
+}
+
+#case_studiesMobile .divider {
+  position:relative;
+  width:2px!important;
+  height:100%;
+  background: #95abb5;
+  background: linear-gradient(0deg, rgba(149,171,181,0) 0%, rgba(149,171,181,1) 40%, rgba(149,171,181,1) 60%, rgba(149,171,181,0) 100%);
+  }
+
+#case_studiesMobile span {
+  display:block;
+  font-size: 0.65em;
+}
+
+#case_studiesMobile .label {
+  font-family: bespokeBold, Georgia, 'Times New Roman', Times, serif;
+  font-weight: bold;
+  font-size:1em;
+}
+
+#case_studiesMobile .info {
+  font-size: 0.8em;
+}
+
+
+#case_studiesMobile .cta {
+  position:relative;
+  margin-top:1.5em;
+  font-size:1.2em;
+  font-family: bespokeBold, Georgia, 'Times New Roman', Times, serif;
+  font-weight: bold;
+  color: #a5b7c0;
+  transition: color 0.5s;
+}
+
+#case_studiesMobile .cta svg {
+  position:absolute;
+  margin-left:0.5em;
+  height:1.5em;
+  width:auto;
+  transition: transform 0.5s, fill 0.5s;
+}
+
+#case_studiesMobile .study {
+  overflow: scroll;
+  height:100%;
+  opacity:0;
+}
+
+#case_studiesMobile .study:nth-child(1) {
+  opacity:1;
+}
+
+#case_studiesMobile {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  height:100%;
+}
+
+#case_studiesMobile .header {
+  position:relative;
+  display:flex;
+  flex-direction: row;
+  padding-bottom:20px;
+}
+
+#case_studiesMobile .header .download {
+  min-width:35px;
+  font-size: 0.8em;
+  text-align: center;
+  font-family: butler, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+
+#case_studiesMobile .body {
+  position:relative;
+  height:100%;
+  width:calc(100% - 4px);
+  padding-right: 12px;
+  overflow:scroll;
+}
+
+#case_studiesMobile .body > div {
+  padding-bottom:10px;
+}
+
+#case_studiesMobile .footer {
+  position:relative;
+  font-size: 0.8em;
+  padding-top: 20px;
+  padding-left:2em;
+  width:100%;
+  box-sizing: border-box;
+  font-family: butler, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+#case_studiesMobile .footer svg {
+  position:absolute;
+  margin-top:-0.2em;
+  margin-left:-2em;
+  height:1.5em;
+  width:auto;
+}
+
+#case_studiesMobile .footer div {
+  display:flex;
+  flex-direction: row;
+  margin: 0.5em 0;
+  transition: color 0.5s;
+}
+
+#case_studiesMobile .footer div.on {
+  color: #96acb6;
+}
+
+/** ------------------------------------------------------------------------------------------------------------- */
+
+.eye {
+  transition: opacity 0.5s;
+}
+
+.eye-outline {
+  fill: none; 
+  stroke-miterlimit: 10; 
+  stroke-linejoin: round; 
+  stroke-linecap: round; 
+  stroke-width: 3; 
+  stroke: #96acb6;  
+}
+
+.eye-pupil {
+  transform:translateY(0%);
+  transition: all 0.5s;
+}
+
+.eye-pupil.sleep {
+  transform:translateY(20%);
+}
+
+.eye-eyelid {
+  transform-origin:50% 50%; 
+  transform:scaleY(1);
+  transition: all 0.5s;
+}
+
+.eye-eyelid.sleep {
+  transform-origin:50% 50%; 
+  transform:scaleY(-1);
+}
+
+#contactMobile {
+  display: flex;
+  flex-direction: column;
+}
+
+#contactMobile > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height:100%;
+}
+
+#contactMobile .infoArea {
+  display:flex;
+  flex-direction: column;
+  height:40%;
+  font-size:1.1em;
+}
+
+#contactMobile .infoArea a {
+  position:relative;
+}
+
+#contactMobile .infoArea img {
+  position:absolute;
+  height:auto;
+  width:1em;
+  top:50%;
+  transform:translateY(-50%);
+}
+
+#contactMobile .infoArea #tel span {
+  margin-bottom:0.2em;
+}
+
+#contactMobile .infoArea span {
+  padding-left:1.5em;
+  display:inline-block;
+}
+
+.navBar {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  height: Max(13%, 75px);
+  box-sizing: border-box;
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  gap:20px;
+  font-size:1.3em;
+  padding-top:1.5em;
+  font-family: butler, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.navBar div {
+  transition: all 0.5s;
+}
+
+.navBar div.on {
+  color: #96acb6;
+  /* font-size:1.5em;
+  line-height:1; */
+}
+
+.mobile-navIndicator {
+  position:absolute;
+  top:3.5em;
+  left:0;
+  height: 1.5em;
+  opacity:0;
+}

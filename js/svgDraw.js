@@ -36,6 +36,267 @@ const arrowData = [
 
 let arrowPaths = []
 
+
+
+export function returnMobileDrawn(app, cards) {
+
+    // rule off edges of card
+    const frontface = app.querySelector('.frontface')
+    const backface = app.querySelector('.backface')
+
+    cardLineOff(cards.sides[0])
+    cardLineOff(cards.sides[1])
+
+    // draw CS lines
+    const size = {
+        w: app.querySelector('.mobileWrapper').offsetWidth, 
+        h: app.querySelector('.mobileWrapper').offsetHeight
+    }
+
+    const cs = cards.pages[1]
+    const offsetCS = 5
+    const csHeader = cs.querySelector('.header')
+    const csHeaderSVG = sv('svg', {
+        viewBox: `0 0 ${size.w} ${30}`,
+        style: `position: absolute; pointer-events:none; bottom:0; left:0; width:100%; height:30px; display: inline-block;`
+    })
+    stackedLines(csHeaderSVG, 'hor', 30-2, 0, size.w, 0.5, -offsetCS, 30, 2)
+    csHeader.prepend(csHeaderSVG)   
+
+    const csFooter = cs.querySelector('.footer') 
+    const csFooterSVG = sv('svg', {
+        viewBox: `0 0 ${size.w} ${30}`,
+        style: `position: absolute; pointer-events:none; top:0; margin-top: -15px; width:100%; height:30px; display: inline-block;`
+    })
+    stackedLines(csFooterSVG, 'hor', 30-2, 0, size.w, 0.5, -offsetCS, 30, 2)
+    csFooter.prepend(csFooterSVG)   
+
+
+
+}
+
+function cardLineOff(dom) {
+
+    const w = dom.offsetWidth
+    const h = dom.offsetHeight
+
+    const svg = sv('svg', {
+        viewBox: `0 0 ${w} ${h}`,
+        style: `position: absolute; pointer-events:none; top:0; left:0; width:${w}px; height:${h}px; display: inline-block;`
+    })
+
+    const lines = []
+    const offset = 3
+    const pl = 15
+    const lineWidth = 1.5
+    const divide = 0.2
+    const th = stackedLines(svg, 'hor', pl, 0 -  w*0.2, w + w*0.2, divide, offset, 0.5, lineWidth)
+    const bh = stackedLines(svg, 'hor', h - pl, 0 -  w*0.2, w + w*0.2, divide, offset, 0.5, lineWidth)
+
+    const lv = stackedLines(svg, 'ver', pl, 0 -  h*0.2, h + h*0.2, divide, offset, 0.5, lineWidth)
+    const rv = stackedLines(svg, 'ver', w - pl, 0 -  h*0.2, h + h*0.2, divide, offset, 0.5, lineWidth)
+
+    lines.push(...th, ...bh, ...lv, ...rv)
+
+    const hazSpace = 5 + 5*Math.random()
+
+    let hazardT = hazardStripe([pl + offset*2, pl - offset], [w - (pl + offset), 0], 45, 2, hazSpace, 0)    
+    hazardT.forEach(haz => {
+        const path = sv('path', {
+            fill:styles.fill,
+            d: variantData(haz, 1, 2, 1),
+        })
+        maskLine(path, haz, svg)
+    })
+
+    let hazardB = hazardStripe([pl, h + pl*2 ], [w - (pl + offset), h - (pl - offset*2)], 45, 2, hazSpace, 0)    
+    hazardB.forEach(haz => {
+        const path = sv('path', {
+            fill:styles.fill,
+            d: variantData(haz, 1, 2, 1),
+        })
+        maskLine(path, haz, svg)
+    })
+
+    let hazardL = hazardStripe([pl - offset, pl + (offset) ], [-pl, h - (pl - offset*2)], 45, 2, hazSpace, 0)    
+    hazardL.forEach(haz => {
+        const path = sv('path', {
+            fill:styles.fill,
+            d: variantData(haz, 1, 2, 1),
+        })
+        maskLine(path, haz, svg)
+    }) 
+
+
+    let hazardR = hazardStripe([w + pl, pl ], [ w - (pl - offset), h - pl], 45, 2, hazSpace, 0)    
+    hazardR.forEach(haz => {
+        const path = sv('path', {
+            fill:styles.fill,
+            d: variantData(haz, 1, 2, 1),
+        })
+        maskLine(path, haz, svg)
+    })   
+
+
+
+  
+//    aniStroke(svg, lines, 0.25, 0.2, 0.25)
+    dom.appendChild(svg)
+
+}
+
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------
+
+export function returnDrawn() {
+    
+
+    const page = sv('svg', {
+        viewBox: `0 0 ${window.innerWidth} ${window.innerHeight}`,
+        style: 'position: fixed; pointer-events:none; top:0; left: 0; width:100%; height:100%'
+    })
+
+
+    let edgeOff = 20
+    let edge2nd = 10
+
+    const lineWidth = 2
+    const wob = 100
+
+
+    const app = document.querySelector('#app')
+
+
+    // top left
+    const lHTL = stackedLines(page, 'hor', edgeOff, -50, window.innerWidth * 0.4, 0.1, edge2nd, wob, lineWidth )
+    const lVTL = stackedLines(page, 'ver', edgeOff, -50, window.innerHeight * 0.2, 0.1, edge2nd, wob, lineWidth )
+    aniStroke(page, [].concat(lHTL, lVTL), 1, 0.25, 0.2)
+
+    // nav line-off
+    const navWidth = document.querySelector('#navBar').offsetWidth
+    const lVNAV1 = stackedLines(page, 'ver', navWidth, -100, window.innerHeight * 0.55, 0.1, edge2nd, wob, lineWidth )
+    const lVNAV2 = stackedLines(page, 'ver', navWidth, window.innerHeight * 0.8,  window.innerHeight + wob/3, 0.5, edge2nd, wob, lineWidth )
+    aniStroke(page, lVNAV1, 1, 0.5, 0.2)
+    aniStroke(page, lVNAV2, 1, 1.2, 0.2)
+
+
+    // top right
+    const lHTR = stackedLines(page, 'hor', edgeOff, window.innerWidth + 50, window.innerWidth * 0.8, 0.1, edge2nd, wob, lineWidth )
+    const lVTR = stackedLines(page, 'ver', window.innerWidth - edgeOff, 0, window.innerHeight * 0.4, 0.1, -edge2nd, wob, lineWidth )
+    aniStroke(page, [].concat(lHTR, lVTR), 1, 0.75, 0.2)
+
+
+    // bottom right
+    const lHBR = stackedLines(page, 'hor', window.innerHeight - edgeOff, window.innerWidth + 50, window.innerWidth * 0.9, 0.1, -edge2nd, wob, lineWidth )
+    const lVBR = stackedLines(page, 'ver', window.innerWidth - edgeOff, window.innerHeight + 50, window.innerHeight * 0.8, 0.1, -edge2nd, wob, lineWidth )
+    aniStroke(page, [].concat(lHBR, lVBR), 1, 1.2, 0.2)
+
+    // middle hor
+    const lHM = stackedLines(page, 'hor', window.innerHeight - edgeOff, window.innerWidth * 0.5, window.innerWidth * 0.7, 0.5, -edge2nd, wob + window.innerWidth*0.075, lineWidth )
+    aniStroke(page, lHM, 1, 1, 0.2)
+
+    // bottom left
+    const lHBL = stackedLines(page, 'hor', window.innerHeight - edgeOff, 0, window.innerWidth * 0.3, 0.1, -edge2nd, wob, lineWidth )
+    const lVBL = stackedLines(page, 'ver', edgeOff, window.innerHeight, window.innerHeight * 0.6, 0.1, edge2nd, wob, lineWidth )
+    aniStroke(page, [].concat(lHBL, lVBL), 1, 0.6, 0.2)
+
+
+    // append page overlay
+    app.appendChild(page)
+
+    
+
+
+
+
+    const introIMdom = document.querySelector('#introduction .imgHold')
+    const introINdom = document.querySelector('#introduction #introInfo')
+
+
+    const introSkirtL = genSkirt(document.querySelectorAll('#introduction .skirt')[0], introINdom, 'right', 0.35 + 0*(0.5-Math.random())*2, 150 + 50 * Math.random())
+    const introSkirtR = genSkirt(document.querySelectorAll('#introduction .skirt')[1], introIMdom, 'left', 0.05, 150, 50, 0.75)
+
+
+
+    generateUnderline(document.querySelector('#introInfo .infoArea'), document.querySelector('#introInfo'), 4, 0.7, 'center')
+
+
+
+
+
+
+    cornerPieces(introIMdom, 70, {
+        tl:[0.5,0.5],
+        br:[0.5,0.3]
+    })
+
+
+    cornerPieces(introINdom, 40, {
+        tl:[0.2,0.15],
+        tr:[0.3,0.15],
+        bl:[0.25,0.15],
+        br:[0.2,0.15]
+    })    
+    
+
+
+
+    const studyDoms = document.querySelectorAll('.study')
+    const hazStudyPos = []
+    studyDoms.forEach((dom, i) => {
+        hazStudyPos.push(i*2, i*2+1)
+
+        cornerPieces(dom.querySelector('.imgHold'), 40, randomCornerObject(0, [0.4,0.2]))
+
+        generateUnderline(dom.querySelector('.infoArea h1'), dom.querySelector('.infoArea'), 'max', 0.5 - (0.3*Math.random()), 'top')
+
+        const infoRandom = Math.random()
+        if(infoRandom > 0.9) {
+            cornerPieces(dom.querySelector('.info'), 40, {
+                bl: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()],
+                br: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()]
+            })
+        } else if(infoRandom > 0.6) {
+            cornerPieces(dom.querySelector('.info'), 40, {
+                bl: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()],
+            })       
+        } else if(infoRandom > 0.2) {
+            cornerPieces(dom.querySelector('.info'), 40, {
+                br: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()]
+            })
+        } else {
+        }
+
+    })
+
+
+    let hazStudy1 = returnStudyPos(hazStudyPos, studyDoms) 
+    const hazStudySkirt1 = genSkirt(document.querySelectorAll('#case_studies .skirt')[hazStudy1.side], hazStudy1.pos, (hazStudy1.side == 0) ? 'right' : 'left', 0.05 + Math.random()*0.2, 50, 50)
+
+    if(Math.random() < 0.5) {
+        let hazStudy2 = returnStudyPos(hazStudyPos, studyDoms) 
+        const hazStudySkirt2 = genSkirt(document.querySelectorAll('#case_studies .skirt')[hazStudy2.side], hazStudy2.pos, (hazStudy2.side == 0) ? 'right' : 'left', 0.05 + Math.random()*0.2, 150, 0, Math.random())
+    }
+
+    if(Math.random() < 0.2) {
+        let hazStudy3 = returnStudyPos(hazStudyPos, studyDoms) 
+        const hazStudySkirt3 = genSkirt(document.querySelectorAll('#case_studies .skirt')[hazStudy3.side], hazStudy3.pos, (hazStudy3.side == 0) ? 'right' : 'left', 0.05 + Math.random()*0.2, 50, 0, Math.random())
+    }    
+
+
+    cornerPieces(document.querySelector('#contact .imgHold'), 40, randomCornerObject([0.2,0.2], [0.2,0.2], [1, 1, 0.7, 0.1]))
+    generateUnderline(document.querySelector('#contact .contactDetails h1'), document.querySelector('#contact .contactDetails'), 'max', 0.7 - (0.3*Math.random()), 'top')
+
+}
+
+
+
+
+
+
+
+
 let svgID = 0
 function sv(type, attributes) {
     const ele = document.createElementNS('http://www.w3.org/2000/svg', type)
@@ -119,7 +380,6 @@ function aniStroke(svg, ele, duration, delay, stag) {
 
 
 let unique = 0
-
 function stackedLines(ele, dir, plane, from, to, weight, offset, dist, wid) {
 
     let l1obj, l2obj 
@@ -356,7 +616,7 @@ function arrowGen(line, svg) {
 
 
 
-function cornerPieces(dom, wob, corners) {
+function cornerPieces(dom, wob, corners, ) {
 
 
     let w = dom.offsetWidth + wob*2;
@@ -430,150 +690,7 @@ export function svgCleanUp() {
     
 }
 
-export function returnDrawn() {
-    
 
-    const page = sv('svg', {
-        viewBox: `0 0 ${window.innerWidth} ${window.innerHeight}`,
-        style: 'position: fixed; pointer-events:none; top:0; left: 0; width:100%; height:100%'
-    })
-
-
-    let edgeOff = 20
-    let edge2nd = 10
-
-    const lineWidth = 2
-    const wob = 100
-
-
-    const app = document.querySelector('#app')
-
-
-    // top left
-    const lHTL = stackedLines(page, 'hor', edgeOff, -50, window.innerWidth * 0.4, 0.1, edge2nd, wob, lineWidth )
-    const lVTL = stackedLines(page, 'ver', edgeOff, -50, window.innerHeight * 0.2, 0.1, edge2nd, wob, lineWidth )
-    aniStroke(page, [].concat(lHTL, lVTL), 1, 0.25, 0.2)
-
-    // nav line-off
-    const navWidth = document.querySelector('#navBar').offsetWidth
-    const lVNAV1 = stackedLines(page, 'ver', navWidth, -100, window.innerHeight * 0.55, 0.1, edge2nd, wob, lineWidth )
-    const lVNAV2 = stackedLines(page, 'ver', navWidth, window.innerHeight * 0.8,  window.innerHeight + wob/3, 0.5, edge2nd, wob, lineWidth )
-    aniStroke(page, lVNAV1, 1, 0.5, 0.2)
-    aniStroke(page, lVNAV2, 1, 1.2, 0.2)
-
-
-    // top right
-    const lHTR = stackedLines(page, 'hor', edgeOff, window.innerWidth + 50, window.innerWidth * 0.8, 0.1, edge2nd, wob, lineWidth )
-    const lVTR = stackedLines(page, 'ver', window.innerWidth - edgeOff, 0, window.innerHeight * 0.4, 0.1, -edge2nd, wob, lineWidth )
-    aniStroke(page, [].concat(lHTR, lVTR), 1, 0.75, 0.2)
-
-
-    // bottom right
-    const lHBR = stackedLines(page, 'hor', window.innerHeight - edgeOff, window.innerWidth + 50, window.innerWidth * 0.9, 0.1, -edge2nd, wob, lineWidth )
-    const lVBR = stackedLines(page, 'ver', window.innerWidth - edgeOff, window.innerHeight + 50, window.innerHeight * 0.8, 0.1, -edge2nd, wob, lineWidth )
-    aniStroke(page, [].concat(lHBR, lVBR), 1, 1.2, 0.2)
-
-    // middle hor
-    const lHM = stackedLines(page, 'hor', window.innerHeight - edgeOff, window.innerWidth * 0.5, window.innerWidth * 0.7, 0.5, -edge2nd, wob + window.innerWidth*0.075, lineWidth )
-    aniStroke(page, lHM, 1, 1, 0.2)
-
-    // bottom left
-    const lHBL = stackedLines(page, 'hor', window.innerHeight - edgeOff, 0, window.innerWidth * 0.3, 0.1, -edge2nd, wob, lineWidth )
-    const lVBL = stackedLines(page, 'ver', edgeOff, window.innerHeight, window.innerHeight * 0.6, 0.1, edge2nd, wob, lineWidth )
-    aniStroke(page, [].concat(lHBL, lVBL), 1, 0.6, 0.2)
-
-
-    // append page overlay
-    app.appendChild(page)
-
-    
-
-
-
-
-    const introIMdom = document.querySelector('#introduction .imgHold')
-    const introINdom = document.querySelector('#introduction #introInfo')
-
-
-    const introSkirtL = genSkirt(document.querySelectorAll('#introduction .skirt')[0], introINdom, 'right', 0.35 + 0*(0.5-Math.random())*2, 150 + 50 * Math.random())
-    const introSkirtR = genSkirt(document.querySelectorAll('#introduction .skirt')[1], introIMdom, 'left', 0.05, 150, 50, 0.75)
-
-
-
-    generateUnderline(document.querySelector('#introInfo .infoArea'), document.querySelector('#introInfo'), 4, 0.7, 'center')
-
-
-
-
-
-
-    cornerPieces(introIMdom, 70, {
-        tl:[0.5,0.5],
-        br:[0.5,0.3]
-    })
-
-
-    cornerPieces(introINdom, 40, {
-        tl:[0.2,0.15],
-        tr:[0.3,0.15],
-        bl:[0.25,0.15],
-        br:[0.2,0.15]
-    })    
-    
-
-
-
-    const studyDoms = document.querySelectorAll('.study')
-    const hazStudyPos = []
-    studyDoms.forEach((dom, i) => {
-        hazStudyPos.push(i*2, i*2+1)
-
-        cornerPieces(dom.querySelector('.imgHold'), 40, randomCornerObject(0, [0.4,0.2]))
-
-        generateUnderline(dom.querySelector('.infoArea h1'), dom.querySelector('.infoArea'), 'max', 0.5 - (0.3*Math.random()), 'top')
-
-        const infoRandom = Math.random()
-        if(infoRandom > 0.9) {
-            cornerPieces(dom.querySelector('.info'), 40, {
-                bl: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()],
-                br: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()]
-            })
-        } else if(infoRandom > 0.6) {
-            cornerPieces(dom.querySelector('.info'), 40, {
-                bl: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()],
-            })       
-        } else if(infoRandom > 0.2) {
-            cornerPieces(dom.querySelector('.info'), 40, {
-                br: [0.4 + 0.2*Math.random(), 0.4 + 0.2*Math.random()]
-            })
-        } else {
-        }
-
-    })
-
-
-    let hazStudy1 = returnStudyPos(hazStudyPos, studyDoms) 
-    const hazStudySkirt1 = genSkirt(document.querySelectorAll('#case_studies .skirt')[hazStudy1.side], hazStudy1.pos, (hazStudy1.side == 0) ? 'right' : 'left', 0.05 + Math.random()*0.2, 50, 50)
-
-    if(Math.random() < 0.5) {
-        let hazStudy2 = returnStudyPos(hazStudyPos, studyDoms) 
-        const hazStudySkirt2 = genSkirt(document.querySelectorAll('#case_studies .skirt')[hazStudy2.side], hazStudy2.pos, (hazStudy2.side == 0) ? 'right' : 'left', 0.05 + Math.random()*0.2, 150, 0, Math.random())
-    }
-
-    if(Math.random() < 0.2) {
-        let hazStudy3 = returnStudyPos(hazStudyPos, studyDoms) 
-        const hazStudySkirt3 = genSkirt(document.querySelectorAll('#case_studies .skirt')[hazStudy3.side], hazStudy3.pos, (hazStudy3.side == 0) ? 'right' : 'left', 0.05 + Math.random()*0.2, 50, 0, Math.random())
-    }    
-
-
-    cornerPieces(document.querySelector('#contact .imgHold'), 40, randomCornerObject([0.2,0.2], [0.2,0.2], [1, 1, 0.7, 0.1]))
-    generateUnderline(document.querySelector('#contact .contactDetails h1'), document.querySelector('#contact .contactDetails'), 'max', 0.7 - (0.3*Math.random()), 'top')
-
-
-
-
-
-}
 
 
 

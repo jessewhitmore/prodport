@@ -1,9 +1,11 @@
 import { gsap } from "gsap";
+import { CustomEase } from "gsap/CustomEase";
+gsap.registerPlugin(CustomEase);
 
 import { contactInfo, domEle } from "../main";
 import { caseStudyGen } from './caseStudy.js'
-import { loadResolver } from "./loadhandler.js";
-import { returnDrawn, svgCleanUp } from "./svgDraw.js";
+import { loadResolver, checkImagesLoaded } from "./loadhandler.js";
+import { returnDrawn, returnMobileDrawn, svgCleanUp } from "./svgDraw.js";
 
 Object.defineProperty(String.prototype, 'capitalise', {
   value: function() {
@@ -19,7 +21,7 @@ function ve(to, name, style, type) {
   if(Array.isArray(name)) {
       element.classList.add(...name)
   } else {
-      element.classList.add(name)
+      if(name) element.classList.add(name)
   }
   if(style !== undefined) {
       for (const [key, value] of Object.entries(style)) {
@@ -29,6 +31,358 @@ function ve(to, name, style, type) {
   if(to) to.appendChild(element)
   return element;
 }
+  // ===================================================================== DEFAULT MOBILE
+  export async function initMobile(app) {
+
+    // img transition function
+    imgTrans()
+
+    app.id = 'mobileApp'
+
+    const shadow = ve(app, 'wrapperShadow')
+
+    const wrapperContainer = ve(app, 'wrapperContainer')
+
+    let dummiThick = 4
+    let multi = 1
+    const backface = ve(wrapperContainer, ['mobileWrapper', 'backface'])
+
+    for(let i = 1; i < dummiThick; i++) {
+      const box = ve(wrapperContainer, 'mobileWrapperThick', {
+        transform: `translateZ(${i * multi}px)`
+      })
+    }
+
+    const wrapper = ve(wrapperContainer, ['mobileWrapper', 'frontface'], {
+      transform: `translateZ(${dummiThick * multi}px)`
+    })
+
+    const holdPlate = document.createElement('div')
+
+    const intro = await genMobile('introduction', holdPlate, (dom, val)=>{
+      const imgHold = ve(dom, 'imgHold')
+      imgHold.appendChild(val.querySelector('img'))
+      const introInfo = ve(dom)
+      introInfo.id = 'introInfo'
+      const h1 = ve(introInfo, undefined, undefined, 'h1')
+      h1.innerText = val.querySelector('h1').innerText
+      const infoArea = ve(introInfo, 'infoArea')
+      infoArea.innerText = val.querySelector('.infoArea').innerText
+      infoArea.innerText = infoArea.innerText
+    })
+
+
+    const cs = await genMobile('case_studies', holdPlate, (dom, val)=>{
+      const header = ve(dom, 'header')
+      const intro = ve(header, 'csTitle')
+      const download = ve(header, 'download')
+      download.innerHTML = `<a href="#" download="#">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.01 25.01">
+            <circle style = "fill: #eceded;" cx="12.5" cy="12.5" r="11"/>
+            <path style = "fill: #96acb6;" d="M12.5,25.01C5.61,25.01,0,19.4,0,12.5S5.61,0,12.5,0s12.5,5.61,12.5,12.5-5.61,12.5-12.5,12.5ZM12.5,3C7.26,3,3,7.26,3,12.5s4.26,9.5,9.5,9.5,9.5-4.26,9.5-9.5S17.74,3,12.5,3Z"/>
+            <path style = "fill: #96acb6;" d="M16.41,18.11h-7.81c-.55,0-1-.45-1-1s.45-1,1-1h7.81c.55,0,1,.45,1,1s-.45,1-1,1Z"/>
+            <path style = "fill: #96acb6;" d="M16.41,10.73h-1.92v-3.67c0-.18-.15-.33-.33-.33h-3.35c-.18,0-.33.15-.33.33v3.67h-1.9c-.3,0-.44.37-.23.57l3.95,3.7c.13.12.33.12.45,0l3.87-3.7c.21-.2.07-.57-.23-.57Z"/>
+        </svg>Save
+      </a>`
+
+      const body = ve(dom, 'body')
+      const footer = ve(dom, 'footer')
+
+      val.querySelectorAll('.study').forEach(v => {
+        const csName = v.classList.value.replaceAll('study','').trim()
+        const studyh = ve(intro, csName, undefined, 'h1')
+        studyh.innerText = v.querySelector('h1').innerText
+        
+        const csBody = ve(body, csName)
+        csBody.appendChild(v.querySelector('.imgHold img'))
+        csBody.innerHTML += v.querySelector('.meta').outerHTML
+        csBody.innerHTML += v.querySelector('.info') .outerHTML
+        csBody.querySelector('.cta').innerHTML = `<a href="download/JWhitmore-${csName}-CaseStudy.pdf" download="JWhitmore-${csName}-CaseStudy.pdf">${csBody.querySelector('.cta').innerHTML.replace('Read', 'Download')}</a>`
+
+        const csFooter = ve(footer, csName)
+        csFooter.innerHTML = `<svg class="eye ${csName}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 25.01 25.01">
+  <defs>
+    <clipPath id="clippath">
+      <path d="M12.5,9.38c-2.96,0-5.45,2.14-6.22,2.88-.14.14-.14.36,0,.5.77.74,3.27,2.88,6.22,2.88s5.45-2.14,6.22-2.88c.14-.14.14-.36,0-.5-.77-.74-3.27-2.88-6.22-2.88Z"/>
+    </clipPath>
+  </defs>
+
+      <path style = "fill: #eceded;" d="M12.51,0C5.6,0,0,5.6,0,12.51s5.6,12.51,12.51,12.51,12.51-5.6,12.51-12.51S19.45.04,12.58,0"/>
+
+      <path class="eye-outline" d="M12.51,1.5C6.43,1.5,1.5,6.43,1.5,12.51s4.93,11,11,11,11-4.93,11-11S18.62,1.54,12.57,1.5"/>
+
+      <g style = "clip-path: url(#clippath)">
+        <circle class = "eye-pupil" style = "fill:#96acb6" cx="12.51" cy="12.51" r="2.05"/>
+      </g>
+        <path class = "eye-eyelid" style = "stroke-linejoin: round; stroke-width: .75; stroke: #96acb6; fill: #96acb6;" d="M19.22,12.5s-2.69-3.49-6.72-3.49-6.71,3.49-6.71,3.49c0,0,2.59-4.14,6.71-4.14s6.72,4.14,6.72,4.14Z"/>
+        <path style = "stroke-linejoin: round; stroke-width: .75; stroke: #96acb6; fill: #96acb6;" d="M19.22,12.5s-2.69,3.51-6.72,3.51-6.71-3.51-6.71-3.51c0,0,2.59,4.16,6.71,4.16s6.72-4.16,6.72-4.16Z"/>
+</svg> ${v.querySelector('h1').innerText}`
+
+        csFooter.addEventListener('click', () => {
+          footer.querySelectorAll('div').forEach(csVal => {
+            if(csVal.querySelector('svg').classList.contains(csName)) {
+              csVal.classList.add('on')
+              csVal.querySelector('svg').style.opacity = 1;
+              csVal.querySelector('.eye-pupil').classList.remove('sleep')
+              csVal.querySelector('.eye-eyelid').classList.remove('sleep')
+            } else {
+              csVal.classList.remove('on')
+              csVal.querySelector('svg').style.opacity = 0.5;
+              csVal.querySelector('.eye-pupil').classList.add('sleep')
+              csVal.querySelector('.eye-eyelid').classList.add('sleep')
+            }
+          })
+          intro.querySelectorAll('h1').forEach(csVal => {
+            csVal.style.display = 'none'
+            if(csVal.classList.contains(csName)) csVal.style.display = 'block'
+          })
+          body.querySelectorAll(':scope > div').forEach(csVal => {
+            csVal.style.display = 'none'
+            if(csVal.classList.contains(csName)) {
+              csVal.scrollTop = 0
+              csVal.style.display = 'block'
+              const alink = csVal.querySelector('a')
+              download.querySelector('a').href = alink.href
+              download.querySelector('a').download = alink.download    
+            }
+          })
+        })
+
+      })
+
+      footer.querySelectorAll('div').forEach((csVal, i) => {
+        if(i == 0) {
+          csVal.classList.add('on')
+          csVal.querySelector('svg').style.opacity = 1;
+          csVal.querySelector('.eye-pupil').classList.remove('sleep')
+          csVal.querySelector('.eye-eyelid').classList.remove('sleep')
+        } else {
+          csVal.classList.remove('on')
+          csVal.querySelector('svg').style.opacity = 0.5;
+          csVal.querySelector('.eye-pupil').classList.add('sleep')
+          csVal.querySelector('.eye-eyelid').classList.add('sleep')
+        }
+      })
+            
+      intro.querySelectorAll('h1').forEach((csVal, i) => {
+        csVal.style.display = 'none'
+        if(i == 0) csVal.style.display = 'block'
+      })
+      body.querySelectorAll(':scope > div').forEach((csVal, i) => {
+        csVal.style.display = 'none'
+        if(i == 0) {
+          csVal.scrollTop = 0
+          csVal.style.display = 'block'
+          const alink = csVal.querySelector('a')
+          download.querySelector('a').href = alink.href
+          download.querySelector('a').download = alink.download
+        }
+      })
+
+    })
+
+
+    const contact = await genMobile('contact', holdPlate, (dom, val) => {
+      const contactDom = ve(dom)
+
+      
+
+      for(const props in contactInfo) {
+        const p = contactInfo[props]
+        let link = document.createElement('a')
+        link.id = props
+        const im = new Image()
+        im.src = `assets/${props}logo.svg`
+    
+        switch(props) {
+          case 'li':
+            link.innerHTML = `<span>linkedin</span>`       
+          break;      
+          case 'cv':
+            link.innerHTML = `<span>Curriculum Vitae</span>`
+          break;
+          default:
+          link.innerHTML = `<span>${p}</span>`
+    
+        }
+    
+        switch(props) {
+          case 'tel':
+            link.href = `tel:${p}`
+          break;
+          case 'e':
+            link.href = `emailto:${p}`
+          break;
+          default:
+            link.href = p
+        }
+    
+        link.prepend(im)    
+        link.addEventListener('click', (e)=>{linkClick(e)})
+        
+        val.querySelector('.infoArea').appendChild(link)
+      }
+    
+      contactDom.innerHTML = val.querySelector('.contactDetails').innerHTML
+      const imgHold = ve(dom)
+      imgHold.innerHTML = val.querySelector('.imgHold div').innerHTML
+
+    })
+
+
+    holdPlate.querySelectorAll('img').forEach(i => {
+      if(i.dataset.src) i.src = i.dataset.src
+      i.style.opacity = 1
+    })
+
+
+    const card = {
+      firstRun: true,
+      sides: [wrapper, backface],
+      container: wrapperContainer,
+      holdPlate,
+      shadow,
+      face: 0,
+      rotY: 0,
+      pages: [intro, cs, contact]
+    }    
+
+    const navBar = ve(app, 'navBar')
+
+    const introButton = ve(navBar, ['introButton', 'on'])
+    introButton.innerText = "Introduction"
+    introButton.addEventListener('click', () => { movePage(navBar, introButton, 0, card) })
+
+    const csButton = ve(navBar, 'csButton')
+    csButton.innerText = "Case Studies"
+    csButton.addEventListener('click', () => { movePage(navBar, csButton, 1, card) })
+    
+    const contactButton = ve(navBar, 'contactButton')
+    contactButton.innerText = "Contact"
+    contactButton.addEventListener('click', () => { movePage(navBar, contactButton, 2, card) })
+
+    const navIndicator = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    navIndicator.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+    navIndicator.setAttribute('viewBox', '0 0 29.71 37.07')
+    navIndicator.classList.add('mobile-navIndicator')
+    navIndicator.innerHTML = `
+      <path style = "fill: #87b8c9;" d="M14.86,0L0,25.73h3.85c.99-5.17,5.55-9.1,11.01-9.1s10.01,3.92,11.01,9.1h3.85L14.86,0Z"/>
+      <path style = "fill: #87b8c9;" d="M14.86,18.64c-4.35,0-8,3.03-8.96,7.1-.16.68-.26,1.39-.26,2.12,0,5.08,4.13,9.21,9.21,9.21s9.21-4.13,9.21-9.21c0-.73-.09-1.44-.26-2.12-.96-4.06-4.61-7.1-8.96-7.1Z"/>
+    `
+    navBar.appendChild(navIndicator)   
+
+    wrapper.appendChild(intro)
+
+    returnMobileDrawn(app, card)
+    
+  }
+
+
+  function setFace(page, dom) {
+    dom.prepend(page)
+  }
+
+  function movePage(nav, section, index, card) {
+    let { sides, holdPlate, face, pages, shadow, container, rotY } = card
+
+    if(section.classList.contains('on')) return;
+
+    let dir = 0
+    nav.querySelectorAll('div').forEach((div,i) => { if(div.classList.contains('on')) { dir = (index - i > 0) ? 1 : -1 ; div.classList.remove('on') } })
+    section.classList.add('on')
+
+
+    card.face = face = (face) ? 0 : 1
+
+    // clear face
+    if(sides[face].querySelector('div')) holdPlate.appendChild(sides[face].firstElementChild)
+
+    setFace(pages[index], sides[face])
+
+    let rotX = gsap.utils.random(-20,20)
+    let rotZ = gsap.utils.random(-20,20)
+    let moveZ = gsap.utils.random(1000,1800, 100)
+    card.rotY = rotY += 180 * dir
+
+    gsap.to(shadow, {
+      keyframes: {
+        rotateX: [0, rotX, 0],
+        rotateZ: [0, rotZ, 0],
+        opacity:[0.2, 0.05, 0.2],
+        y:[5,-100,5],
+        filter:['blur(5px)','blur(50px)','blur(5px)']
+      },
+      rotateY: rotY,
+      ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
+      duration:0.75
+    })
+
+    gsap.to(container, {
+      keyframes: {
+        rotateX: [0, rotX, 0],
+        rotateZ: [0, rotZ, 0],
+        z: [0, moveZ, 0],
+      },
+      rotateY: rotY,
+      ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
+      duration:0.75
+    })
+
+    const navibb = nav.querySelector('.mobile-navIndicator').getBoundingClientRect() 
+    const secbb = section.getBoundingClientRect()
+    const indX = secbb.x + secbb.width/2 - navibb.width/2
+    gsap.to('.mobile-navIndicator', {
+      opacity:1,
+      x:indX,
+      duration:0.7
+    })
+    
+
+
+
+
+    
+  }
+   
+
+  async function genMobile(mdFilePath, wrap, fn) {
+    try {
+      const response = await fetch(`md/${mdFilePath}.md`);
+      const mdText = await response.text();
+      
+
+      if (!response.ok) { // Check if the response status is not OK (e.g., 404 Not Found)
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }      
+
+      if (mdText.includes('<html') || mdText.includes('<!DOCTYPE html>')) {
+        throw new Error('Error: Expected Markdown content, but received HTML.');
+      }
+  
+      const dom = ve(wrap)
+      dom.id = `${mdFilePath}Mobile`
+      const ele = document.createElement('div')
+      ele.innerHTML = mdText
+      fn(dom, ele)
+      
+
+      return dom
+    } catch (error) {
+      console.log(error)
+        // console.error('Error loading Markdown content:', error);
+        // const refresh = document.createElement('a')
+        // refresh.href = '#'
+        // refresh.innerText = 'Error loading content.'
+        // refresh.addEventListener('click', (e)=>{
+        //   e.preventDefault()
+        //   insertMDtext(selector, mdFilePath)
+        //   selector.innerText = ''
+        // })
+        // selector.appendChild(refresh);
+    }
+  }
+
+
 
   // ===================================================================== DEFAULT PAGE
   function genSec(targetName) {
@@ -353,7 +707,7 @@ export async function init(app) {
   const navObserver = new IntersectionObserver(navshow, {
     root: null, // Use the viewport as the container
     rootMargin: '0px',
-    threshold: 0.6 // Trigger when 10% of the target is visible
+    threshold: 0.6 
   });
   navObserver.observe(headerSec.dom);
   navObserver.observe(contactSec.dom);
@@ -561,7 +915,7 @@ const blockChange = (entries, sectionObserver) => {
 
 const blockObserver = new IntersectionObserver(blockChange, {
   root: null, // Use the viewport as the container
-  rootMargin: '-30% 0px -30% 0px',
+  rootMargin: '-10% 0px -30% 0px',
   threshold: 0.1 // Trigger when 10% of the target is visible
 });
 
@@ -651,7 +1005,7 @@ export function setupblockAni() {
        filter: 'blur(0px)',
        opacity: 1,
        duration:0.5,
-      },0.6)
+      },0.25)
       .fromTo(dom.querySelectorAll('.imgHold div'), {
        filter: 'blur(5px)',
        opacity: 0,
@@ -719,6 +1073,8 @@ function imgTrans() {
 }
 
 export function grungeMask(img) {
+
+  console.dir(img)
 
   // 18 frames
   const frames = 18

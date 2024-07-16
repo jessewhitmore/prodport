@@ -37,7 +37,7 @@ export function setupLoader() {
 }
 
 // Function to check if all images are loaded
-function checkImagesLoaded() {
+export function checkImagesLoaded() {
     const images = document.querySelectorAll('img:not([loadhandled])');
     let loadedCount = 0;
 
@@ -51,6 +51,7 @@ function checkImagesLoaded() {
             
         }
     })
+
 
     if(!loadResolver.running) {
         const pushedArray = []
@@ -71,9 +72,9 @@ function loadNext() {
     const tempimg = new Image()
     tempimg.onload = () => {
         img.src = img.dataset.src
-        if(img.hasAttribute('nogrunge')) {
-            img.style.display = 'block'
-            img.style.opacity = 1
+        img.style.display = 'block'
+        img.style.opacity = 1
+        if(!img.hasAttribute('nogrunge')) {
             grungeMask(img)
         }
         loadNext()
