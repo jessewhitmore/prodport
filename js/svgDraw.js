@@ -40,9 +40,9 @@ let arrowPaths = []
 
 export function returnMobileDrawn(app, cards) {
 
-    // rule off edges of card
-    const frontface = app.querySelector('.frontface')
-    const backface = app.querySelector('.backface')
+    try {
+        app.querySelectorAll('.convertedSVG').forEach(dom => {dom.remove()})
+    } catch(e) {}
 
     const side1 = cardLineOff(cards.sides[0])
     const side2 = cardLineOff(cards.sides[1])
@@ -59,7 +59,7 @@ export function returnMobileDrawn(app, cards) {
     const csHeaderSVG = sv('svg', {
         viewBox: `0 0 ${size.w} ${30}`,
         style: `position: absolute; pointer-events:none; bottom:0; left:0; width:100%; height:30px; display: inline-block;`
-    })
+    }) 
     stackedLines(csHeaderSVG, 'hor', 30-2, 0, size.w, 0.5, -offsetCS, 30, 2)
     csHeader.prepend(csHeaderSVG)   
 
@@ -68,6 +68,7 @@ export function returnMobileDrawn(app, cards) {
         viewBox: `0 0 ${size.w} ${30}`,
         style: `position: absolute; pointer-events:none; top:0; left:0; margin-top: -5px; width:100%; height:30px; display: inline-block;`
     })
+
     stackedLines(csFooterSVG, 'hor', 30-2, 0, size.w, 0.5, -offsetCS, 30, 2)
     csFooter.prepend(csFooterSVG)   
 
@@ -164,6 +165,7 @@ function svg2img(svgElement) {
     if (svgStyle) {
       imgElement.setAttribute('style', svgStyle);
     }
+    imgElement.classList.add('convertedSVG')
   
     svgElement.parentNode.replaceChild(imgElement, svgElement);
   }

@@ -324,10 +324,32 @@ function ve(to, name, style, type) {
       opacity:1,
       x:indX,
     })
-        
-    swipehandling(app, outerContainer, outerShadow, card)
 
     returnMobileDrawn(app, card)
+
+    const enterY = gsap.utils.random(-100,20)
+    let enterR = gsap.utils.random(45,-45)
+    enterR = enterR < 0 ? enterR-20 : enterR+20 
+    console.log(enterR)
+    gsap.from([outerContainer, outerShadow], {
+      x: `120vw`,
+      y: `${enterY}svh`,
+      rotate: enterR,
+      ease: "power3.out",
+      duration: 1.8,
+      delay: 0.3,
+      onComplete: () => { swipehandling(app, outerContainer, outerShadow, card) },
+    })
+
+
+    const resizeObserver = new ResizeObserver(entries => {
+      for (let entry of entries) {
+
+        returnMobileDrawn(app, card)
+      }
+    });    
+    // Start observing the target element
+    resizeObserver.observe(wrapper);    
     
   }
 
@@ -359,7 +381,14 @@ function ve(to, name, style, type) {
     let rotX = gsap.utils.random(-20,20)
     let rotZ = gsap.utils.random(-20,20)
     let moveZ = gsap.utils.random(500,1200, 100)
+    let dur = gsap.utils.random(1.2,1.6)
+    let easeOptions = [
+      'M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1',
+      'M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.545,0.95 0.563,0.944 0.623,0.944 0.671,0.944 0.716,0.97 0.744,1 0.792,1.052 0.826,0.913 0.88,0.963 0.914,1.013 0.928,1.026 0.944,1 0.995,0.937 1,1 1,1',
+      'M0,0 C0.51,0.395 0.376,1.14 0.515,0.999 0.574,0.95 0.577,0.933 0.637,0.933 0.685,0.933 0.73,0.97 0.758,1 0.806,1.052 0.818,0.917 0.872,0.967 0.906,1.017 0.928,1.026 0.944,1 0.973,0.95 1,1 1,1'
+    ]
     card.rotY = rotY += 180 * dir
+    const chosenEase = easeOptions[Math.abs(card.rotY/180) % easeOptions.length]
 
     gsap.killTweensOf(shadow)
     gsap.to(shadow, {
@@ -374,8 +403,8 @@ function ve(to, name, style, type) {
       scaleX:1,
       rotateY: rotY,
       transformOrigin:'50% 50%',
-      ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
-      duration: 1.2
+      ease: CustomEase.create("custom", chosenEase),
+      duration: dur
     })
 
     gsap.killTweensOf(container)
@@ -387,8 +416,8 @@ function ve(to, name, style, type) {
       },
       rotateY: rotY,
       transformOrigin:'50% 50%',
-      ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
-      duration: 1.2,
+      ease: CustomEase.create("custom", chosenEase),
+      duration: dur,
       onComplete: () => { card.animating = false }
     })
 
@@ -453,6 +482,22 @@ function ve(to, name, style, type) {
     });
 
     app.addEventListener('touchend', function(e) {
+
+      gsap.killTweensOf(card)
+      gsap.to(card, {
+        rotateY: 0,
+        duration:0.5,
+      })
+
+      gsap.to(shadow, {
+        scaleX:1,
+        duration:0.5
+      })
+      gsap.to(shadow.querySelector('.wrapperShadow'), {
+        background: 'linear-gradient(to left, rgba(60, 64, 64, 1), rgba(60, 64, 64, 1))',
+        duration:0.5
+      })
+
       if(swipeValue == -1) {
         cardObj.cPage -= 1;
         if(cardObj.cPage < 0) cardObj.cPage = cardObj.pages.length - 1
@@ -463,21 +508,6 @@ function ve(to, name, style, type) {
         movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, 1)
 
       }
-      gsap.killTweensOf(card)
-      gsap.to(card, {
-        rotateY: 0,
-        duration:0.2,
-      })
-
-      gsap.to(shadow, {
-        scaleX:1,
-        duration:0.2
-      })
-      gsap.to(shadow.querySelector('.wrapperShadow'), {
-        background: 'linear-gradient(to left, rgba(60, 64, 64, 1), rgba(60, 64, 64, 1))',
-        duration:0.2
-
-      })
       
       startX = 0;  
       swipeValue = 0;
