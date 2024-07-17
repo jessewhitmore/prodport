@@ -213,7 +213,7 @@ class slideInstance {
                 });   
                 promiseArray.push(loadPromise)            
             })
-            console.log(promiseArray)
+
             Promise.all(promiseArray).then((i)=> {
                 this.loading = false
                 this.slideshow.querySelector('.slides').classList.remove('loading')
@@ -348,6 +348,8 @@ class slideInstance {
 
         prev.addEventListener('click', this.handlePrev)
         next.addEventListener('click', this.handleNext)
+        slideshow.addEventListener('click', this.handleNext)
+        slideshow.style.cursor = 'pointer'
 
         window.addEventListener("keydown", this.handleKeypress)
 
@@ -369,6 +371,8 @@ class slideInstance {
     depopulate() {
         this.prev.removeEventListener('click', this.handlePrev)
         this.next.removeEventListener('click', this.handleNext)
+        this.populatedSlideshow.addEventListener('click', this.handleNext)
+
         this.close.removeEventListener('click', this.handleDepop)
         window.removeEventListener('keydown', this.handleKeypress)
 

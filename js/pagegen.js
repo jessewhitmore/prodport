@@ -34,14 +34,17 @@ function ve(to, name, style, type) {
   // ===================================================================== DEFAULT MOBILE
   export async function initMobile(app) {
 
+    document.body.classList.add('mobile')
     // img transition function
     imgTrans()
 
     app.id = 'mobileApp'
 
-    const shadow = ve(app, 'wrapperShadow')
+    const outerShadow = ve(app, 'outerShadow')
+    const shadow = ve(outerShadow, 'wrapperShadow')
 
-    const wrapperContainer = ve(app, 'wrapperContainer')
+    const outerContainer = ve(app, 'outerContainer')
+    const wrapperContainer = ve(outerContainer, 'wrapperContainer')
 
     let dummiThick = 4
     let multi = 1
@@ -130,7 +133,6 @@ function ve(to, name, style, type) {
           duration:0.4          
         }
 
-
         csFooter.addEventListener('click', () => {
           footer.querySelectorAll('div').forEach(csVal => {
             if(csVal.querySelector('svg').classList.contains(csName)) {
@@ -160,7 +162,7 @@ function ve(to, name, style, type) {
           })
           body.querySelectorAll(':scope > div').forEach(csVal => {
             if(csVal.classList.contains(csName)) {
-              csVal.scrollTop = 0
+              csVal.parentElement.scrollTo({ top: 0, behavior: 'smooth' })
               const alink = csVal.querySelector('a')
               download.querySelector('a').href = alink.href
               download.querySelector('a').download = alink.download
@@ -178,6 +180,22 @@ function ve(to, name, style, type) {
         })
 
       })
+            
+      intro.querySelectorAll('h1').forEach((csVal, i) => {
+        csVal.style.opacity = 0
+        if(i == 0) csVal.style.opacity = 1
+      })
+
+      body.querySelectorAll(':scope > div').forEach((csVal, i) => {
+        csVal.style.opacity = 0        
+        if(i == 0) {
+          csVal.scrollTop = 0
+          csVal.style.opacity = 1
+          const alink = csVal.querySelector('a')
+          download.querySelector('a').href = alink.href
+          download.querySelector('a').download = alink.download
+        }
+      })
 
       footer.querySelectorAll('div').forEach((csVal, i) => {
         if(i == 0) {
@@ -190,21 +208,6 @@ function ve(to, name, style, type) {
           csVal.querySelector('svg').style.opacity = 0.5;
           csVal.querySelector('.eye-pupil').classList.add('sleep')
           csVal.querySelector('.eye-eyelid').classList.add('sleep')
-        }
-      })
-            
-      intro.querySelectorAll('h1').forEach((csVal, i) => {
-        csVal.style.opacity = 0
-        if(i == 0) csVal.style.opacity = 1
-      })
-      body.querySelectorAll(':scope > div').forEach((csVal, i) => {
-        csVal.style.opacity = 0        
-        if(i == 0) {
-          csVal.scrollTop = 0
-          csVal.style.opacity = 1
-          const alink = csVal.querySelector('a')
-          download.querySelector('a').href = alink.href
-          download.querySelector('a').download = alink.download
         }
       })
 
@@ -273,6 +276,7 @@ function ve(to, name, style, type) {
       shadow,
       face: 0,
       rotY: 0,
+      cPage: 0,
       pages: [intro, cs, contact]
     }    
 
@@ -290,6 +294,9 @@ function ve(to, name, style, type) {
     contactButton.innerText = "Contact"
     contactButton.addEventListener('click', () => { movePage(navBar, contactButton, 2, card) })
 
+    card.navBar = navBar
+    card.navSec = [introButton, csButton, contactButton]
+
     const navIndicator = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     navIndicator.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
     navIndicator.setAttribute('viewBox', '0 0 29.71 37.07')
@@ -299,8 +306,18 @@ function ve(to, name, style, type) {
       <path style = "fill: #87b8c9;" d="M14.86,18.64c-4.35,0-8,3.03-8.96,7.1-.16.68-.26,1.39-.26,2.12,0,5.08,4.13,9.21,9.21,9.21s9.21-4.13,9.21-9.21c0-.73-.09-1.44-.26-2.12-.96-4.06-4.61-7.1-8.96-7.1Z"/>
     `
     navBar.appendChild(navIndicator)   
-
     wrapper.appendChild(intro)
+
+    const navibb = navIndicator.getBoundingClientRect() 
+    const secbb = introButton.getBoundingClientRect()
+    const indX = secbb.x + secbb.width/2 - navibb.width/2
+
+    gsap.set('.mobile-navIndicator', {
+      opacity:1,
+      x:indX,
+    })
+        
+    swipehandling(app, outerContainer, outerShadow, card)
 
     returnMobileDrawn(app, card)
     
@@ -311,7 +328,7 @@ function ve(to, name, style, type) {
     dom.prepend(page)
   }
 
-  function movePage(nav, section, index, card) {
+  function movePage(nav, section, index, card, dirOverride) {
     let { sides, holdPlate, face, pages, shadow, container, rotY } = card
 
     if(section.classList.contains('on')) return;
@@ -319,14 +336,16 @@ function ve(to, name, style, type) {
     let dir = 0
     nav.querySelectorAll('div').forEach((div,i) => { if(div.classList.contains('on')) { dir = (index - i > 0) ? 1 : -1 ; div.classList.remove('on') } })
     section.classList.add('on')
+    if(dirOverride) dir = dirOverride
 
-
+    card.cPage = index
     card.face = face = (face) ? 0 : 1
 
     // clear face
     if(sides[face].querySelector('div')) holdPlate.appendChild(sides[face].firstElementChild)
 
     setFace(pages[index], sides[face])
+
 
     let rotX = gsap.utils.random(-20,20)
     let rotZ = gsap.utils.random(-20,20)
@@ -338,13 +357,16 @@ function ve(to, name, style, type) {
       keyframes: {
         rotateX: [0, rotX, 0],
         rotateZ: [0, rotZ, 0],
-        opacity:[0.2, 0.05, 0.2],
+        opacity:[1, 0.3, 0.1, 0.3, 1],
         y:[5,-100,5],
        filter:['blur(5px)','blur(50px)','blur(5px)']
       },
+      background: 'linear-gradient(to left, rgba(60, 64, 64, 1), rgba(60, 64, 64, 1))',
+      scaleX:1,
       rotateY: rotY,
+      transformOrigin:'50% 50%',
       ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
-      duration:0.75
+      duration: 1.2
     })
 
     gsap.killTweensOf(container)
@@ -355,8 +377,9 @@ function ve(to, name, style, type) {
         z: [0, moveZ, 0],
       },
       rotateY: rotY,
+      transformOrigin:'50% 50%',
       ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
-      duration:0.75
+      duration: 1.2
     })
 
     const navibb = nav.querySelector('.mobile-navIndicator').getBoundingClientRect() 
@@ -371,13 +394,87 @@ function ve(to, name, style, type) {
       duration:0.7
     })
     
-
-
-
-
-    
   }
-   
+  
+  function swipehandling(app, card, shadow, cardObj) {
+    let startX = 0;
+    let swipeValue = 0
+    let width = app.offsetWidth
+
+    app.addEventListener('touchstart', function(e) {
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        width = app.offsetWidth
+        
+    });
+
+    app.addEventListener('touchmove', function(e) {
+        const touch = e.touches[0];
+        const distX = touch.clientX - startX;
+        const viewportWidth = window.innerWidth * 0.2;
+
+        swipeValue = Math.max(-1,Math.min(1,distX / viewportWidth));
+
+        let swipeDir = swipeValue < 0 ? 'left' : 'right'
+
+        gsap.set(card, { 
+          rotateY: 45*swipeValue,
+          transformOrigin: swipeDir == 'left' ? `35px 50%` : `${width - 35}px 50%`
+        })
+
+        gsap.set(shadow, {
+          scaleX: 1 - (0.3 * Math.abs(swipeValue)),
+          transformOrigin: swipeDir == 'left' ? `35px 50%` : `${width - 35}px 50%`
+        })
+
+        const flipDetermine = Math.abs((cardObj.rotY/180) % 2);
+        if(flipDetermine == 1) {
+          swipeDir = swipeDir == 'left' ? 'right' : 'left'
+        }
+        gsap.set(shadow.querySelector('.wrapperShadow'), {
+          background: `linear-gradient(to left, rgba(60, 64, 64, ${swipeDir == 'right' ? 1 : 1 - Math.abs(swipeValue) }), rgba(60, 64, 64, ${swipeDir == 'left' ? 1 : 1 - Math.abs(swipeValue) }))`,
+        })
+
+
+
+        // Prevent default to avoid scrolling during swipe
+        e.preventDefault();
+    });
+
+    app.addEventListener('touchend', function(e) {
+      if(swipeValue == -1) {
+        cardObj.cPage -= 1;
+        if(cardObj.cPage < 0) cardObj.cPage = cardObj.pages.length - 1
+        movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, -1)        
+      } else if(swipeValue == 1) {
+        cardObj.cPage += 1;
+        if(cardObj.cPage == cardObj.pages.length) cardObj.cPage = 0
+        movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, 1)
+
+      }
+      gsap.killTweensOf(card)
+      gsap.to(card, {
+        rotateY: 0,
+        duration:0.2,
+      })
+
+      gsap.to(shadow, {
+        scaleX:1,
+        duration:0.2
+      })
+      gsap.to(shadow.querySelector('.wrapperShadow'), {
+        background: 'linear-gradient(to left, rgba(60, 64, 64, 1), rgba(60, 64, 64, 1))',
+        duration:0.2
+
+      })
+      
+      startX = 0;  
+      swipeValue = 0;
+
+    });    
+  }
+
+
 
   async function genMobile(mdFilePath, wrap, fn) {
     try {
