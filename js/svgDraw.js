@@ -150,7 +150,6 @@ function cardLineOff(dom) {
 
 
 function svg2img(svgElement) {
-    console.log(svgElement)
     const svgString = new XMLSerializer().serializeToString(svgElement);  
     const encodedData = window.btoa(svgString);
     const imgSrc = `data:image/svg+xml;base64,${encodedData}`;

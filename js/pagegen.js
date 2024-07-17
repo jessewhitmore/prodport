@@ -241,9 +241,17 @@ function ve(to, name, style, type) {
         switch(props) {
           case 'tel':
             link.href = `tel:${p}`
+            link.classList.add('copy')
+            link.addEventListener('click', ()=> {
+              copied(link, p)
+            })
           break;
           case 'e':
-            link.href = `emailto:${p}`
+            link.href = `mailto:${p}`
+            link.classList.add('copy')
+            link.addEventListener('click', ()=> {
+              copied(link, p)
+            })
           break;
           default:
             link.href = p
@@ -402,16 +410,18 @@ function ve(to, name, style, type) {
     let startX = 0;
     let swipeValue = 0
     let width = app.offsetWidth
-
+    let killSwitch = false
     app.addEventListener('touchstart', function(e) {
-        const touch = e.touches[0]
-        startX = touch.clientX
-        width = app.offsetWidth
+      killSwitch = findParentWithClass(e.target, 'body')
+      const touch = e.touches[0]
+      startX = touch.clientX
+      width = app.offsetWidth
         
     });
 
     app.addEventListener('touchmove', function(e) {
         if(cardObj.animating) return;
+        if(killSwitch) return;
         const touch = e.touches[0]
         const distX = touch.clientX - startX
         const viewportWidth = window.innerWidth * 0.2
@@ -440,8 +450,6 @@ function ve(to, name, style, type) {
 
 
 
-        // Prevent default to avoid scrolling during swipe
-        e.preventDefault();
     });
 
     app.addEventListener('touchend', function(e) {
@@ -476,8 +484,18 @@ function ve(to, name, style, type) {
 
     });    
   }
+  function findParentWithClass(element, className) {
+    let currentElement = element;
 
+    while (currentElement !== document.body) {
+        if (currentElement.classList.contains(className)) {
+            return true; // Return the element if found
+        }
 
+        currentElement = currentElement.parentElement;
+    }
+    return false;
+}
 
   async function genMobile(mdFilePath, wrap, fn) {
     try {
@@ -792,9 +810,17 @@ export async function init(app) {
     switch(props) {
       case 'tel':
         link.href = `tel:${p}`
+        link.classList.add('copy')
+        link.addEventListener('click', ()=> {
+          copied(link, p)
+        })
       break;
       case 'e':
-        link.href = `emailto:${p}`
+        link.href = `mailto:${p}`
+        link.classList.add('copy')
+        link.addEventListener('click', ()=> {
+          copied(link, p)
+        })        
       break;
       default:
         link.href = p
@@ -802,6 +828,7 @@ export async function init(app) {
 
 
     const introLinks = link.cloneNode(true)
+
     introLinks.prepend(im.cloneNode())
     introIcons.push(introLinks)
 
@@ -815,10 +842,34 @@ export async function init(app) {
   }
 
   introIcons.forEach(icon => {
-    contactSec.dom.querySelector('.infoArea').appendChild(icon.cloneNode(true))
+    const newIcon = icon.cloneNode(true)
+
+    contactSec.dom.querySelector('.infoArea').appendChild(newIcon)
     const text = icon.querySelector('span')
     headerSec.dom.querySelector('.iconsText').appendChild(text)
     headerSec.dom.querySelector('.icons').appendChild(icon)
+
+
+    if(icon.classList.contains('copy')) {
+      switch(icon.id) {
+        case 'tel':
+          icon.addEventListener('click', ()=> {
+            copied(text, contactInfo.tel)
+          })
+          newIcon.addEventListener('click', ()=> {
+            copied(newIcon, contactInfo.tel)
+          })          
+        break;
+        case 'e':
+          icon.addEventListener('click', ()=> {
+            copied(text, contactInfo.e)
+          })
+          newIcon.addEventListener('click', ()=> {
+            copied(newIcon, contactInfo.e)
+          })                   
+        break;
+      }
+    }    
     icon.addEventListener('mouseover',()=>{
       text.style.opacity = 1
     })
@@ -1230,3 +1281,39 @@ export function grungeMask(img) {
     }
   },20)
  }
+
+
+async function copied(ele, copy) {
+    const textarea = document.createElement('textarea')
+    textarea.style.display = 'none'
+    textarea.value = copy
+    document.body.appendChild(textarea)
+    let copied = true;
+    try {
+      await navigator.clipboard.writeText(textarea.value);
+      console.log('Text copied to clipboard');
+      copied = true
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      copied = false
+      console.log('failed')
+    }  
+    try {
+      if(!copied) {
+        textarea.select();
+        console.log('Text copied to clipboard oldschool');
+        document.execCommand('copy');
+      }
+    } catch(err) {
+      console.log('failed again')
+    }
+  document.body.removeChild(textarea);
+
+  ele.classList.add('on')
+  setTimeout(()=>{
+    ele.classList.remove('on')
+  },1000)
+
+ }
+
+
