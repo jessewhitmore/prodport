@@ -742,14 +742,19 @@ img[loaded] {
   font-size: 2vh;
 }
 
+#introductionMobile {
+  display:flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
 #introductionMobile .imgHold {
-  height: 60%;
+  height: 100%;
   width:100%;
   box-sizing: border-box;
 }
 
 #introductionMobile #introInfo {
-  margin-top: 2em;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -764,10 +769,17 @@ img[loaded] {
 
 /** ------------------------------------------------------------------------------------------------------------- */
 
+#case_studiesMobile .csTitle {
+  position:relative;
+  width:100%;
+}
+
 #case_studiesMobile h1 {
   font-size: 1.6em;
   line-height:1.2em;
   margin-right:10px;
+  position:absolute;
+  top:0;
 }
 
 #case_studiesMobile .meta {
@@ -830,15 +842,6 @@ img[loaded] {
   transition: transform 0.5s, fill 0.5s;
 }
 
-#case_studiesMobile .study {
-  overflow: scroll;
-  height:100%;
-  opacity:0;
-}
-
-#case_studiesMobile .study:nth-child(1) {
-  opacity:1;
-}
 
 #case_studiesMobile {
   position: absolute;
@@ -871,6 +874,9 @@ img[loaded] {
 }
 
 #case_studiesMobile .body > div {
+  position:absolute;
+  top:0;
+  width:calc(100% - 12px);
   padding-bottom:10px;
 }
 

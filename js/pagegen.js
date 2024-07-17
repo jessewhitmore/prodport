@@ -118,6 +118,19 @@ function ve(to, name, style, type) {
         <path style = "stroke-linejoin: round; stroke-width: .75; stroke: #96acb6; fill: #96acb6;" d="M19.22,12.5s-2.69,3.51-6.72,3.51-6.71-3.51-6.71-3.51c0,0,2.59,4.16,6.71,4.16s6.72-4.16,6.72-4.16Z"/>
 </svg> ${v.querySelector('h1').innerText}`
 
+        const onDef = {
+          opacity:1,
+          x: 0,
+          duration:0.4
+        }
+
+        const offDef = {
+          x:5,
+          opacity:0,
+          duration:0.4          
+        }
+
+
         csFooter.addEventListener('click', () => {
           footer.querySelectorAll('div').forEach(csVal => {
             if(csVal.querySelector('svg').classList.contains(csName)) {
@@ -133,17 +146,33 @@ function ve(to, name, style, type) {
             }
           })
           intro.querySelectorAll('h1').forEach(csVal => {
-            csVal.style.display = 'none'
-            if(csVal.classList.contains(csName)) csVal.style.display = 'block'
+            if(csVal.classList.contains(csName)) { 
+              gsap.to(csVal, {
+                ...onDef,
+                delay:0.2
+              })
+            } else {
+              gsap.to(csVal, {
+                ...offDef,
+                delay:0
+              })
+            }
           })
           body.querySelectorAll(':scope > div').forEach(csVal => {
-            csVal.style.display = 'none'
             if(csVal.classList.contains(csName)) {
               csVal.scrollTop = 0
-              csVal.style.display = 'block'
               const alink = csVal.querySelector('a')
               download.querySelector('a').href = alink.href
-              download.querySelector('a').download = alink.download    
+              download.querySelector('a').download = alink.download
+              gsap.to(csVal, {
+                ...onDef,
+                delay: 0.3
+              })              
+            } else {
+              gsap.to(csVal, {
+                ...offDef,
+                delay:0.1
+              })
             }
           })
         })
@@ -165,14 +194,14 @@ function ve(to, name, style, type) {
       })
             
       intro.querySelectorAll('h1').forEach((csVal, i) => {
-        csVal.style.display = 'none'
-        if(i == 0) csVal.style.display = 'block'
+        csVal.style.opacity = 0
+        if(i == 0) csVal.style.opacity = 1
       })
       body.querySelectorAll(':scope > div').forEach((csVal, i) => {
-        csVal.style.display = 'none'
+        csVal.style.opacity = 0        
         if(i == 0) {
           csVal.scrollTop = 0
-          csVal.style.display = 'block'
+          csVal.style.opacity = 1
           const alink = csVal.querySelector('a')
           download.querySelector('a').href = alink.href
           download.querySelector('a').download = alink.download
@@ -304,23 +333,25 @@ function ve(to, name, style, type) {
     let moveZ = gsap.utils.random(500,1200, 100)
     card.rotY = rotY += 180 * dir
 
-    // gsap.to(shadow, {
-    //   keyframes: {
-    //     // rotateX: [0, rotX, 0],
-    //     // rotateZ: [0, rotZ, 0],
-    //     opacity:[0.2, 0.05, 0.2],
-    //     y:[5,-100,5],
-    //     filter:['blur(5px)','blur(50px)','blur(5px)']
-    //   },
-    //   rotateY: rotY,
-    //   ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
-    //   duration:0.75
-    // })
+    gsap.killTweensOf(shadow)
+    gsap.to(shadow, {
+      keyframes: {
+        rotateX: [0, rotX, 0],
+        rotateZ: [0, rotZ, 0],
+        opacity:[0.2, 0.05, 0.2],
+        y:[5,-100,5],
+       filter:['blur(5px)','blur(50px)','blur(5px)']
+      },
+      rotateY: rotY,
+      ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
+      duration:0.75
+    })
 
+    gsap.killTweensOf(container)
     gsap.to(container, {
       keyframes: {
-//       rotateX: [0, rotX, 0],
-//       rotateZ: [0, rotZ, 0],
+      rotateX: [0, rotX, 0],
+      rotateZ: [0, rotZ, 0],
         z: [0, moveZ, 0],
       },
       rotateY: rotY,
@@ -331,6 +362,9 @@ function ve(to, name, style, type) {
     const navibb = nav.querySelector('.mobile-navIndicator').getBoundingClientRect() 
     const secbb = section.getBoundingClientRect()
     const indX = secbb.x + secbb.width/2 - navibb.width/2
+
+
+    gsap.killTweensOf('.mobile-navIndicator')
     gsap.to('.mobile-navIndicator', {
       opacity:1,
       x:indX,

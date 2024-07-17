@@ -44,8 +44,8 @@ export function returnMobileDrawn(app, cards) {
     const frontface = app.querySelector('.frontface')
     const backface = app.querySelector('.backface')
 
-    cardLineOff(cards.sides[0])
-    cardLineOff(cards.sides[1])
+    const side1 = cardLineOff(cards.sides[0])
+    const side2 = cardLineOff(cards.sides[1])
 
     // draw CS lines
     const size = {
@@ -66,11 +66,16 @@ export function returnMobileDrawn(app, cards) {
     const csFooter = cs.querySelector('.footer') 
     const csFooterSVG = sv('svg', {
         viewBox: `0 0 ${size.w} ${30}`,
-        style: `position: absolute; pointer-events:none; top:0; margin-top: -15px; width:100%; height:30px; display: inline-block;`
+        style: `position: absolute; pointer-events:none; top:0; left:0; margin-top: -5px; width:100%; height:30px; display: inline-block;`
     })
     stackedLines(csFooterSVG, 'hor', 30-2, 0, size.w, 0.5, -offsetCS, 30, 2)
     csFooter.prepend(csFooterSVG)   
 
+
+    svg2img(side1)
+    svg2img(side2)
+    svg2img(csHeaderSVG)
+    svg2img(csFooterSVG)
 
 
 }
@@ -136,15 +141,38 @@ function cardLineOff(dom) {
         })
         maskLine(path, haz, svg)
     })   
-
-
-
   
 //    aniStroke(svg, lines, 0.25, 0.2, 0.25)
     dom.appendChild(svg)
+    return svg;
 
 }
 
+
+function svg2img(svgElement) {
+    console.log(svgElement)
+    const svgString = new XMLSerializer().serializeToString(svgElement);  
+    const encodedData = window.btoa(svgString);
+    const imgSrc = `data:image/svg+xml;base64,${encodedData}`;
+  
+    const imgElement = document.createElement('img');
+    imgElement.src = imgSrc;
+  
+    imgElement.width = svgElement.getAttribute('width');
+    imgElement.height = svgElement.getAttribute('height');
+  
+    const svgStyle = svgElement.getAttribute('style');
+    if (svgStyle) {
+      imgElement.setAttribute('style', svgStyle);
+    }
+  
+    svgElement.parentNode.replaceChild(imgElement, svgElement);
+  }
+  
+
+  
+  // Replace the SVG with the IMG
+  
 
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------
