@@ -15,7 +15,7 @@ export const contactInfo = {
   tel: "0421907903",
   e: 'j.whitmore.mail@gmail.com',
   li: 'https://www.linkedin.com/in/jesse-whitmore-998a18133/',
-  cv: 'assets/cv.pdf'
+  cv: 'download/JWhitmore-CV-PM.pdf'
 }
 
 

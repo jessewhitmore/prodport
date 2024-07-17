@@ -79,7 +79,7 @@ function ve(to, name, style, type) {
       const header = ve(dom, 'header')
       const intro = ve(header, 'csTitle')
       const download = ve(header, 'download')
-      download.innerHTML = `<a href="#" download="#">
+      download.innerHTML = `<a href="javascript:void(0)" download="#">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.01 25.01">
             <circle style = "fill: #eceded;" cx="12.5" cy="12.5" r="11"/>
             <path style = "fill: #96acb6;" d="M12.5,25.01C5.61,25.01,0,19.4,0,12.5S5.61,0,12.5,0s12.5,5.61,12.5,12.5-5.61,12.5-12.5,12.5ZM12.5,3C7.26,3,3,7.26,3,12.5s4.26,9.5,9.5,9.5,9.5-4.26,9.5-9.5S17.74,3,12.5,3Z"/>
@@ -252,6 +252,10 @@ function ve(to, name, style, type) {
             link.addEventListener('click', ()=> {
               copied(link, p)
             })
+          break;
+          case 'cv':
+            link.href = p
+            link.download = 'J-Whitmore-CV'
           break;
           default:
             link.href = p
@@ -853,6 +857,10 @@ export async function init(app) {
         link.addEventListener('click', ()=> {
           copied(link, p)
         })        
+      break;
+      case 'cv':
+        link.href = p
+        link.download = 'J-Whitmore-CV'
       break;
       default:
         link.href = p
