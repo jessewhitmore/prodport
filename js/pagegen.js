@@ -336,7 +336,7 @@ function ve(to, name, style, type) {
       y: `${enterY}svh`,
       rotate: enterR,
       ease: "power3.out",
-      duration: 1.8,
+      duration: 1.5,
       delay: 0.3,
       onComplete: () => { swipehandling(app, outerContainer, outerShadow, card) },
     })
@@ -458,6 +458,8 @@ function ve(to, name, style, type) {
         swipeValue = Math.max(-1,Math.min(1,distX / viewportWidth));
 
         let swipeDir = swipeValue < 0 ? 'left' : 'right'
+
+   
 
         gsap.set(card, { 
           rotateY: 45*swipeValue,
