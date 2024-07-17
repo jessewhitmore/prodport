@@ -332,6 +332,7 @@ function ve(to, name, style, type) {
     let { sides, holdPlate, face, pages, shadow, container, rotY } = card
 
     if(section.classList.contains('on')) return;
+    card.animating = true
 
     let dir = 0
     nav.querySelectorAll('div').forEach((div,i) => { if(div.classList.contains('on')) { dir = (index - i > 0) ? 1 : -1 ; div.classList.remove('on') } })
@@ -379,7 +380,8 @@ function ve(to, name, style, type) {
       rotateY: rotY,
       transformOrigin:'50% 50%',
       ease: CustomEase.create("custom", "M0,0 C0.51,0.395 0.347,1.14 0.486,0.999 0.486,0.999 0.553,0.944 0.613,0.944 0.661,0.944 0.714,0.97 0.742,1 0.79,1.052 0.802,0.927 0.856,0.977 0.89,1.027 0.929,1 0.929,1 0.962,0.967 1,1 1,1 "),
-      duration: 1.2
+      duration: 1.2,
+      onComplete: () => { card.animating = false }
     })
 
     const navibb = nav.querySelector('.mobile-navIndicator').getBoundingClientRect() 
@@ -402,16 +404,17 @@ function ve(to, name, style, type) {
     let width = app.offsetWidth
 
     app.addEventListener('touchstart', function(e) {
-        const touch = e.touches[0];
-        startX = touch.clientX;
+        const touch = e.touches[0]
+        startX = touch.clientX
         width = app.offsetWidth
         
     });
 
     app.addEventListener('touchmove', function(e) {
-        const touch = e.touches[0];
-        const distX = touch.clientX - startX;
-        const viewportWidth = window.innerWidth * 0.2;
+        if(cardObj.animating) return;
+        const touch = e.touches[0]
+        const distX = touch.clientX - startX
+        const viewportWidth = window.innerWidth * 0.2
 
         swipeValue = Math.max(-1,Math.min(1,distX / viewportWidth));
 
