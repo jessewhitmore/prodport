@@ -697,6 +697,7 @@ body.mobile {
   display: flex;
   opacity:0;
   background: url(https://assets.playground.xyz/JWhitmore/1db49aee_marble.jpg) #f9f9f7;
+  font-size: 4.2vw;
   background-size: cover;
   perspective: 4000px;
   perspective-origin: center 300%;
@@ -742,7 +743,7 @@ body.mobile {
   top:50px;
   left:40px;
   right: 37px;
-  height: Min(80%, calc(100% - 155px));
+  height: Min(80%, 150vw);
   overflow:hidden;
   background: linear-gradient(to left, rgba(60, 64, 64, 1), rgba(60, 64, 64, 1));
   border-radius: 25px;
@@ -759,7 +760,7 @@ body.mobile {
   top:50px;
   left:35px;
   right: 35px;
-  height: Min(80%, calc(100% - 150px));
+  height: Min(80%, 155vw);
   overflow:hidden;
   background: url(https://assets.playground.xyz/JWhitmore/59d3d051_paper.jpg) #f9f9f7;
   border-radius: 25px;
@@ -772,7 +773,7 @@ body.mobile {
   top:50px;
   left:35px;
   right: 35px;
-  height: Min(80%, calc(100% - 150px));
+  height: Min(80%, 155vw);
   overflow:hidden;
   background: url(https://assets.playground.xyz/JWhitmore/59d3d051_paper.jpg) #f9f9f7;
   border-radius: 25px;
@@ -790,7 +791,6 @@ body.mobile {
   height:100%;
   padding:30px;
   box-sizing: border-box;
-  font-size: 2vh;
 }
 
 #introductionMobile {
@@ -1000,18 +1000,21 @@ body.mobile {
   flex-direction: column;
 }
 
+#contactMobile h1 {
+  line-height:1.25;
+  margin-bottom: 0.6em;
+}
+
 #contactMobile > div {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  height:100%;
 }
 
 #contactMobile .infoArea {
   display:flex;
   flex-direction: column;
-  height:40%;
-  font-size:1.1em;
+  gap: 0.5vh;
+  font-size:1em;
 }
 
 #contactMobile .infoArea a {
@@ -1035,18 +1038,28 @@ body.mobile {
   display:inline-block;
 }
 
+
+#contactMobile .imgHold {
+  margin-top:1.25em;
+  height:100%;
+}
+
+#contactMobile .imgHold img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  
+}
+
 .navBar {
   position:fixed;
-  bottom:0;
   width:100%;
-  height: Max(13%, 75px);
+  top: Min(90.5%, 180vw);
   box-sizing: border-box;
   display:flex;
   flex-direction: row;
   justify-content: center;
   gap:20px;
-  font-size:1.3em;
-  padding-top:1.5em;
+  font-size:1.1em;
   font-family: butler, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
@@ -1056,13 +1069,11 @@ body.mobile {
 
 .navBar div.on {
   color: #96acb6;
-  /* font-size:1.5em;
-  line-height:1; */
 }
 
 .mobile-navIndicator {
   position:absolute;
-  top:3em;
+  top:1.5em;
   left:0;
   height: 1.5em;
   opacity:0;

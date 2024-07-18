@@ -217,8 +217,6 @@ function ve(to, name, style, type) {
     const contact = await genMobile('contact', holdPlate, (dom, val) => {
       const contactDom = ve(dom)
 
-      
-
       for(const props in contactInfo) {
         const p = contactInfo[props]
         let link = document.createElement('a')
@@ -268,7 +266,7 @@ function ve(to, name, style, type) {
       }
     
       contactDom.innerHTML = val.querySelector('.contactDetails').innerHTML
-      const imgHold = ve(dom)
+      const imgHold = ve(dom, 'imgHold')
       imgHold.innerHTML = val.querySelector('.imgHold div').innerHTML
 
     })
@@ -504,14 +502,14 @@ function ve(to, name, style, type) {
         duration:0.5
       })
 
-      if(swipeValue == -1) {
+      if(swipeValue == 1) {
         cardObj.cPage -= 1;
         if(cardObj.cPage < 0) cardObj.cPage = cardObj.pages.length - 1
-        movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, -1)        
-      } else if(swipeValue == 1) {
+        movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, 1)        
+      } else if(swipeValue == -1) {
         cardObj.cPage += 1;
         if(cardObj.cPage == cardObj.pages.length) cardObj.cPage = 0
-        movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, 1)
+        movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, -1)
 
       }
       
