@@ -450,7 +450,7 @@ function ve(to, name, style, type) {
       startX = touch.clientX
       width = app.offsetWidth
         
-    });
+    }, { passive: true} );
 
     app.addEventListener('touchmove', function(e) {
         if(cardObj.animating) return;
@@ -505,7 +505,7 @@ function ve(to, name, style, type) {
         }
 
 
-    });
+    }, { passive: true} );
 
     app.addEventListener('touchend', function(e) {
       if(killSwitch) return;
@@ -515,7 +515,7 @@ function ve(to, name, style, type) {
       swipeValue = 0
       touchLock = false
 
-    });    
+    }, { passive: true} );    
   }
 
   function killAnimation(card, shadow) {
