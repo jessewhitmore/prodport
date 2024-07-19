@@ -739,11 +739,10 @@ body.mobile {
 
 .wrapperShadow {
   position:fixed;
-  box-sizing: border-box;
   top:50px;
   left:40px;
   right: 37px;
-  height: Min(80%, 150vw);
+  height: Min(80%, 155vw);
   overflow:hidden;
   background: linear-gradient(to left, rgba(60, 64, 64, 1), rgba(60, 64, 64, 1));
   border-radius: 25px;
@@ -826,7 +825,7 @@ body.mobile {
 }
 
 #case_studiesMobile h1 {
-  font-size: 1.6em;
+  font-size: 1.4em;
   line-height:1.2em;
   margin-right:10px;
   position:absolute;
