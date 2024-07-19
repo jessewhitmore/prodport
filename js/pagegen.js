@@ -442,6 +442,8 @@ function ve(to, name, style, type) {
     let swipeValue = 0
     let width = app.offsetWidth
     let killSwitch = false
+    let timeoutFire = null
+    let touchLock = false
     app.addEventListener('touchstart', function(e) {
       killSwitch = findParentWithClass(e.target, 'body')
       const touch = e.touches[0]
@@ -453,6 +455,8 @@ function ve(to, name, style, type) {
     app.addEventListener('touchmove', function(e) {
         if(cardObj.animating) return;
         if(killSwitch) return;
+        if(touchLock) return;
+
         const touch = e.touches[0]
         const distX = touch.clientX - startX
         const viewportWidth = window.innerWidth * 0.2
@@ -462,12 +466,13 @@ function ve(to, name, style, type) {
         let swipeDir = swipeValue < 0 ? 'left' : 'right'
 
    
-
+        gsap.killTweensOf(card)
         gsap.set(card, { 
           rotateY: 45*swipeValue,
           transformOrigin: swipeDir == 'left' ? `35px 50%` : `${width - 35}px 50%`
         })
 
+        gsap.killTweensOf(shadow)
         gsap.set(shadow, {
           scaleX: 1 - (0.3 * Math.abs(swipeValue)),
           transformOrigin: swipeDir == 'left' ? `35px 50%` : `${width - 35}px 50%`
@@ -477,47 +482,61 @@ function ve(to, name, style, type) {
         if(flipDetermine == 1) {
           swipeDir = swipeDir == 'left' ? 'right' : 'left'
         }
+
+        gsap.killTweensOf(shadow.querySelector('.wrapperShadow'))
         gsap.set(shadow.querySelector('.wrapperShadow'), {
           background: `linear-gradient(to left, rgba(60, 64, 64, ${swipeDir == 'right' ? 1 : 1 - Math.abs(swipeValue) }), rgba(60, 64, 64, ${swipeDir == 'left' ? 1 : 1 - Math.abs(swipeValue) }))`,
         })
 
+        if(Math.abs(swipeValue) == 1) {
+          touchLock = true
+          killAnimation(card, shadow)
+
+          if(swipeValue == 1) {
+            cardObj.cPage -= 1;
+            if(cardObj.cPage < 0) cardObj.cPage = cardObj.pages.length - 1
+            movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, 1)        
+          } else if(swipeValue == -1) {
+            cardObj.cPage += 1;
+            if(cardObj.cPage == cardObj.pages.length) cardObj.cPage = 0
+            movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, -1)
+          }        
+
+        }
 
 
     });
 
     app.addEventListener('touchend', function(e) {
-
-      gsap.killTweensOf(card)
-      gsap.to(card, {
-        rotateY: 0,
-        duration:0.5,
-      })
-
-      gsap.to(shadow, {
-        scaleX:1,
-        duration:0.5
-      })
-      gsap.to(shadow.querySelector('.wrapperShadow'), {
-        background: 'linear-gradient(to left, rgba(60, 64, 64, 1), rgba(60, 64, 64, 1))',
-        duration:0.5
-      })
-
-      if(swipeValue == 1) {
-        cardObj.cPage -= 1;
-        if(cardObj.cPage < 0) cardObj.cPage = cardObj.pages.length - 1
-        movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, 1)        
-      } else if(swipeValue == -1) {
-        cardObj.cPage += 1;
-        if(cardObj.cPage == cardObj.pages.length) cardObj.cPage = 0
-        movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, -1)
-
-      }
+      if(killSwitch) return;
+      killAnimation(card, shadow)
       
-      startX = 0;  
-      swipeValue = 0;
+      startX = 0
+      swipeValue = 0
+      touchLock = false
 
     });    
   }
+
+  function killAnimation(card, shadow) {
+    gsap.to(card, {
+      rotateY: 0,
+      duration:0.5,
+    })
+
+    gsap.to(shadow, {
+      scaleX:1,
+      duration:0.5
+    })    
+
+    gsap.to(shadow.querySelector('.wrapperShadow'), {
+      background: 'linear-gradient(to left, rgba(60, 64, 64, 1), rgba(60, 64, 64, 1))',
+      duration:0.5
+    })
+
+  }
+
+
   function findParentWithClass(element, className) {
     let currentElement = element;
 
