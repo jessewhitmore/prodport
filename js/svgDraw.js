@@ -40,10 +40,6 @@ let arrowPaths = []
 
 export function returnMobileDrawn(app, cards) {
 
-    try {
-        app.querySelectorAll('.convertedSVG').forEach(dom => {dom.remove()})
-    } catch(e) {}
-
     const side1 = cardLineOff(cards.sides[0])
     const side2 = cardLineOff(cards.sides[1])
 
@@ -58,7 +54,7 @@ export function returnMobileDrawn(app, cards) {
     const csHeader = cs.querySelector('.header')
     const csHeaderSVG = sv('svg', {
         viewBox: `0 0 ${size.w} ${30}`,
-        style: `position: absolute; pointer-events:none; bottom:0; left:0; width:100%; height:30px; display: inline-block;`
+        style: `position: absolute; pointer-events:none; bottom:-1px; left:0; width:100%; height:30px; display: inline-block;`
     }) 
     stackedLines(csHeaderSVG, 'hor', 30-2, 0, size.w, 0.5, -offsetCS, 30, 2)
     csHeader.prepend(csHeaderSVG)   
@@ -69,8 +65,8 @@ export function returnMobileDrawn(app, cards) {
         style: `position: absolute; pointer-events:none; top:0; left:0; margin-top: -5px; width:100%; height:30px; display: inline-block;`
     })
 
-    stackedLines(csFooterSVG, 'hor', 30-2, 0, size.w, 0.5, -offsetCS, 30, 2)
-    csFooter.prepend(csFooterSVG)   
+    stackedLines(csFooterSVG, 'hor', 12, 0, size.w, 0.5, offsetCS, 30, 2)
+    csFooter.prepend(csFooterSVG)
 
 
     svg2img(side1)
@@ -164,6 +160,8 @@ function svg2img(svgElement) {
     const svgStyle = svgElement.getAttribute('style');
     if (svgStyle) {
       imgElement.setAttribute('style', svgStyle);
+      imgElement.removeAttribute('width')
+      imgElement.removeAttribute('height')
     }
     imgElement.classList.add('convertedSVG')
   

@@ -687,21 +687,22 @@ body.mobile {
   width:100%;
   position: fixed;
   overscroll-behavior-x: none;
+  background: url(https://assets.playground.xyz/JWhitmore/1db49aee_marble.jpg) #f9f9f7;
+
 }
 
 #mobileApp {
   position:absolute;
   width:100%;
-  height:100svh;
-  top:0;
+  height: Min(100svh, 200vw);
+  top:50%;
+  transform:translateY(-50%);
   display: flex;
   opacity:0;
-  background: url(https://assets.playground.xyz/JWhitmore/1db49aee_marble.jpg) #f9f9f7;
   font-size: 4.2vw;
   background-size: cover;
   perspective: 4000px;
   perspective-origin: center 300%;
-  overflow: hidden; 
 }
 
 #case_studiesMobile .body img {

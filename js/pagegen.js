@@ -213,7 +213,6 @@ function ve(to, name, style, type) {
 
     })
 
-
     const contact = await genMobile('contact', holdPlate, (dom, val) => {
       const contactDom = ve(dom)
 
@@ -327,7 +326,6 @@ function ve(to, name, style, type) {
       x:indX,
     })
 
-    returnMobileDrawn(app, card)
 
     const enterY = gsap.utils.random(-100,20)
     let enterR = gsap.utils.random(45,-45)
@@ -343,15 +341,19 @@ function ve(to, name, style, type) {
       onComplete: () => { swipehandling(app, outerContainer, outerShadow, card) },
     })
 
+    returnMobileDrawn(app, card)
 
     const resizeObserver = new ResizeObserver(entries => {
       for (let entry of entries) {
-
+        svgCleanUp()
+        try {
+          app.querySelectorAll('.convertedSVG').forEach(dom => {dom.remove()})
+          holdPlate.querySelectorAll('.convertedSVG').forEach(dom => {dom.remove()})
+      } catch(e) { }        
         returnMobileDrawn(app, card)
       }
-    });    
-    // Start observing the target element
-    resizeObserver.observe(wrapper);    
+    });   
+    resizeObserver.observe(wrapper)
     
   }
 
