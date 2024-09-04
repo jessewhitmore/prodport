@@ -26,7 +26,7 @@ LEFT
 <img data-src="https://assets.playground.xyz/JWhitmore/c0ff998f_DOG00013.jpg" />
 ----- LEFT
 <img data-src="https://assets.playground.xyz/JWhitmore/6c717370_DOG00014.jpg" />
------ LEFT
+----- FADE
 <img data-src="https://assets.playground.xyz/JWhitmore/53ad7ea2_DOG00015.jpg" />
 ----- FADE
 <img data-src="https://assets.playground.xyz/JWhitmore/9a5c878c_DOG00016.jpg" />
