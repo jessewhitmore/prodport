@@ -265,6 +265,10 @@ img[loaded] {
   align-items: center;
 }
 
+#introInfo svg {
+  z-index:-1;  
+}
+
 #introInfo h1 {
   font-size:1.2em;
 }
