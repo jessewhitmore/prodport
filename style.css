@@ -649,12 +649,15 @@ img[loaded] {
 }
 
 #contact .contactDetails svg {
-  margin-top: -5px!important;
+  margin-top: -10px!important;
+  z-index:0;
 }
 
 #contact h1 {
+  position:relative;
   font-size:2.5em;
   line-height:1.2em;
+  z-index:1;
 }
 
 
