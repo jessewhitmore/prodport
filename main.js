@@ -79,15 +79,4 @@ window.onload = () => {
     setup()
   }
 
-
-
 };
-
-
-
-
-
-
-
-
-

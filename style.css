@@ -277,6 +277,10 @@ img[loaded] {
   font-size:1.2em;
 }
 
+#introInfo .icons {
+  position:relative;
+}
+
 #introInfo .icons a {
   margin-right:0.75em;
 }
