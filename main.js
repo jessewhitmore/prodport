@@ -15,9 +15,14 @@ export const contactInfo = {
   tel: "0421907903",
   e: 'j.whitmore.mail@gmail.com',
   li: 'https://www.linkedin.com/in/jesse-whitmore-998a18133/',
-  cv: 'download/JWhitmore-CV-PM.pdf'
+  cv: 'https://assets.playground.xyz/JWhitmore/29e6da12_JWhitmore-CV.pdf'
 }
 
+export const csDL = {
+  dogs: 'https://assets.playground.xyz/JWhitmore/46b14c97_JWhitmore-DOGS-CaseStudy.pdf',
+  sliders: 'https://assets.playground.xyz/JWhitmore/22b2e514_JWhitmore-sliders-CaseStudy.pdf',
+  velocity: 'https://assets.playground.xyz/JWhitmore/275b64cc_JWhitmore-velocity-CaseStudy.pdf'
+}
 
 export const styles = {
   fill: '#d3eefb'//'#95abb5' // '#d3eefb'

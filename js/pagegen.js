@@ -2,7 +2,7 @@ import { gsap } from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 gsap.registerPlugin(CustomEase);
 
-import { contactInfo, domEle } from "../main";
+import { contactInfo, domEle, csDL } from "../main";
 import { caseStudyGen } from './caseStudy.js'
 import { loadResolver, checkImagesLoaded } from "./loadhandler.js";
 import { returnDrawn, returnMobileDrawn, svgCleanUp } from "./svgDraw.js";
@@ -31,38 +31,18 @@ function ve(to, name, style, type) {
   if(to) to.appendChild(element)
   return element;
 }
+
+function appendQS(d, p, t) {
+  d.appendChild(p.querySelector(t))
+}
+
   // ===================================================================== DEFAULT MOBILE
+
   export async function initMobile(app) {
+    
+    app.id = "mobileApp"
 
-    document.body.classList.add('mobile')
-    // img transition function
-    imgTrans()
-
-    app.id = 'mobileApp'
-
-    const outerShadow = ve(app, 'outerShadow')
-    const shadow = ve(outerShadow, 'wrapperShadow')
-
-    const outerContainer = ve(app, 'outerContainer')
-    const wrapperContainer = ve(outerContainer, 'wrapperContainer')
-
-    let dummiThick = 4
-    let multi = 1
-    const backface = ve(wrapperContainer, ['mobileWrapper', 'backface'])
-
-    for(let i = 1; i < dummiThick; i++) {
-      const box = ve(wrapperContainer, 'mobileWrapperThick', {
-        transform: `translateZ(${i * multi}px)`
-      })
-    }
-
-    const wrapper = ve(wrapperContainer, ['mobileWrapper', 'frontface'], {
-      transform: `translateZ(${dummiThick * multi}px)`
-    })
-
-    const holdPlate = document.createElement('div')
-
-    const intro = await genMobile('introduction', holdPlate, (dom, val)=>{
+    const intro = await genMobile('introduction', app, (dom, val) => {
       const imgHold = ve(dom, 'imgHold')
       imgHold.appendChild(val.querySelector('img'))
       const introInfo = ve(dom)
@@ -71,11 +51,10 @@ function ve(to, name, style, type) {
       h1.innerText = val.querySelector('h1').innerText
       const infoArea = ve(introInfo, 'infoArea')
       infoArea.innerText = val.querySelector('.infoArea').innerText
-      infoArea.innerText = infoArea.innerText
     })
 
+    const cs = await genMobile('case_studies', app, (dom, val) => {
 
-    const cs = await genMobile('case_studies', holdPlate, (dom, val)=>{
       const header = ve(dom, 'header')
       const intro = ve(header, 'csTitle')
       const download = ve(header, 'download')
@@ -100,7 +79,7 @@ function ve(to, name, style, type) {
         csBody.appendChild(v.querySelector('.imgHold img'))
         csBody.innerHTML += v.querySelector('.meta').outerHTML
         csBody.innerHTML += v.querySelector('.info') .outerHTML
-        csBody.querySelector('.cta').innerHTML = `<a href="download/JWhitmore-${csName}-CaseStudy.pdf" download="JWhitmore-${csName}-CaseStudy.pdf">${csBody.querySelector('.cta').innerHTML.replace('Read', 'Download')}</a>`
+        csBody.querySelector('.cta').innerHTML = `<a href="${csDL[csName]}" download="JWhitmore-${csName}-CaseStudy.pdf">${csBody.querySelector('.cta').innerHTML.replace('Read', 'Download')}</a>`
 
         const csFooter = ve(footer, csName)
         csFooter.innerHTML = `<svg class="eye ${csName}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 25.01 25.01">
@@ -122,14 +101,16 @@ function ve(to, name, style, type) {
 </svg> ${v.querySelector('h1').innerText}`
 
         const onDef = {
-          opacity:1,
+          autoAlpha:1,
+          display: 'block',
           x: 0,
           duration:0.4
         }
 
         const offDef = {
           x:5,
-          opacity:0,
+          autoAlpha:0,
+          display: 'none',
           duration:0.4          
         }
 
@@ -213,7 +194,7 @@ function ve(to, name, style, type) {
 
     })
 
-    const contact = await genMobile('contact', holdPlate, (dom, val) => {
+    const contact = await genMobile('contact', app, (dom, val) => {
       const contactDom = ve(dom)
 
       for(const props in contactInfo) {
@@ -271,40 +252,33 @@ function ve(to, name, style, type) {
     })
 
 
-    holdPlate.querySelectorAll('img').forEach(i => {
+    app.querySelectorAll('img').forEach(i => {
       if(i.dataset.src) i.src = i.dataset.src
       i.style.opacity = 1
     })
 
 
-    const card = {
-      firstRun: true,
-      sides: [wrapper, backface],
-      container: wrapperContainer,
-      holdPlate,
-      shadow,
-      face: 0,
-      rotY: 0,
-      cPage: 0,
-      pages: [intro, cs, contact]
-    }    
+
 
     const navBar = ve(app, 'navBar')
 
     const introButton = ve(navBar, ['introButton', 'on'])
     introButton.innerText = "Introduction"
-    introButton.addEventListener('click', () => { movePage(navBar, introButton, 0, card) })
+    introButton.addEventListener('click', () => {
+      moveMobile([intro, cs, contact], 0, navBar)
+    })
 
     const csButton = ve(navBar, 'csButton')
     csButton.innerText = "Case Studies"
-    csButton.addEventListener('click', () => { movePage(navBar, csButton, 1, card) })
+    csButton.addEventListener('click', () => { 
+      moveMobile([intro, cs, contact], 1, navBar)
+    })
     
     const contactButton = ve(navBar, 'contactButton')
     contactButton.innerText = "Contact"
-    contactButton.addEventListener('click', () => { movePage(navBar, contactButton, 2, card) })
-
-    card.navBar = navBar
-    card.navSec = [introButton, csButton, contactButton]
+    contactButton.addEventListener('click', () => { 
+      moveMobile([intro, cs, contact], 2, navBar)
+    })
 
     const navIndicator = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     navIndicator.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
@@ -315,47 +289,486 @@ function ve(to, name, style, type) {
       <path style = "fill: #87b8c9;" d="M14.86,18.64c-4.35,0-8,3.03-8.96,7.1-.16.68-.26,1.39-.26,2.12,0,5.08,4.13,9.21,9.21,9.21s9.21-4.13,9.21-9.21c0-.73-.09-1.44-.26-2.12-.96-4.06-4.61-7.1-8.96-7.1Z"/>
     `
     navBar.appendChild(navIndicator)   
-    wrapper.appendChild(intro)
+//    wrapper.appendChild(intro)
 
     const navibb = navIndicator.getBoundingClientRect() 
     const secbb = introButton.getBoundingClientRect()
     const indX = secbb.x + secbb.width/2 - navibb.width/2
 
+    
     gsap.set('.mobile-navIndicator', {
       opacity:1,
       x:indX,
     })
 
 
-    const enterY = gsap.utils.random(-100,20)
-    let enterR = gsap.utils.random(45,-45)
-    enterR = enterR < 0 ? enterR-20 : enterR+20 
-    console.log(enterR)
-    gsap.from([outerContainer, outerShadow], {
-      x: `120vw`,
-      y: `${enterY}svh`,
-      rotate: enterR,
-      ease: "power3.out",
-      duration: 1.5,
-      delay: 0.3,
-      onComplete: () => { swipehandling(app, outerContainer, outerShadow, card) },
-    })
 
-    returnMobileDrawn(app, card)
-
+    returnMobileDrawn(app, [intro, cs, contact])
     const resizeObserver = new ResizeObserver(entries => {
       for (let entry of entries) {
         svgCleanUp()
         try {
           app.querySelectorAll('.convertedSVG').forEach(dom => {dom.remove()})
-          holdPlate.querySelectorAll('.convertedSVG').forEach(dom => {dom.remove()})
       } catch(e) { }        
-        returnMobileDrawn(app, card)
+        returnMobileDrawn(app, [intro, cs, contact])
       }
     });   
-    resizeObserver.observe(wrapper)
-    
+    resizeObserver.observe(app)
+
+
+//    touchHandling(app)
+
+}
+
+function moveMobile(eles, target, navBar) {
+  for(let i = 0; i < eles.length; i++) {
+    if(i == target) mobEnter(eles[i]); else mobExit(eles[i])
   }
+
+  navBar.querySelectorAll('div').forEach((v, i) => {
+    if(i == target) v.classList.add('on'); else v.classList.remove('on');
+  })
+
+  const navibb = navBar.querySelector('.mobile-navIndicator').getBoundingClientRect() 
+  const secbb = navBar.querySelector('.on').getBoundingClientRect()
+  const indX = secbb.x + secbb.width/2 - navibb.width/2
+
+  gsap.killTweensOf('.mobile-navIndicator')
+  gsap.to('.mobile-navIndicator', {
+    opacity:1,
+    x:indX,
+    duration:0.4,
+    ease: "back.out(1)"
+  })  
+
+}
+
+function mobEnter(target) {
+  gsap.to(target, {
+    autoAlpha: 1,
+    duration:0.2,
+    delay:0.2
+  })
+
+
+}
+
+function mobExit(target) {
+  gsap.to(target, {
+    autoAlpha: 0,
+    duration:0.2
+  })
+}
+
+function touchHandling(app) {
+  let startX = 0;
+  let swipeValue = 0
+
+  let width = app.offsetWidth
+  let killSwitch = false
+  let timeoutFire = null
+  let touchLock = false
+  app.addEventListener('touchstart', function(e) {
+    killSwitch = findParentWithClass(e.target, 'body')
+    const touch = e.touches[0]
+    startX = touch.clientX
+    width = app.offsetWidth
+      
+  }, { passive: true} );
+
+  app.addEventListener('touchmove', function(e) {
+      if(cardObj.animating) return;
+      if(killSwitch) return;
+      if(touchLock) return;
+
+      const touch = e.touches[0]
+      const distX = touch.clientX - startX
+      const viewportWidth = window.innerWidth * 0.2
+
+      swipeValue = Math.max(-1,Math.min(1,distX / viewportWidth));
+
+      let swipeDir = swipeValue < 0 ? 'left' : 'right'
+
+ 
+      gsap.killTweensOf(card)
+      gsap.set(card, { 
+        rotateY: 45*swipeValue,
+        transformOrigin: swipeDir == 'left' ? `35px 50%` : `${width - 35}px 50%`
+      })
+
+      gsap.killTweensOf(shadow)
+      gsap.set(shadow, {
+        scaleX: 1 - (0.3 * Math.abs(swipeValue)),
+        transformOrigin: swipeDir == 'left' ? `35px 50%` : `${width - 35}px 50%`
+      })
+
+      const flipDetermine = Math.abs((cardObj.rotY/180) % 2);
+      if(flipDetermine == 1) {
+        swipeDir = swipeDir == 'left' ? 'right' : 'left'
+      }
+
+      gsap.killTweensOf(shadow.querySelector('.wrapperShadow'))
+      gsap.set(shadow.querySelector('.wrapperShadow'), {
+        background: `linear-gradient(to left, rgba(60, 64, 64, ${swipeDir == 'right' ? 1 : 1 - Math.abs(swipeValue) }), rgba(60, 64, 64, ${swipeDir == 'left' ? 1 : 1 - Math.abs(swipeValue) }))`,
+      })
+
+      if(Math.abs(swipeValue) == 1) {
+        touchLock = true
+        killAnimation(card, shadow)
+
+        if(swipeValue == 1) {
+          cardObj.cPage -= 1;
+          if(cardObj.cPage < 0) cardObj.cPage = cardObj.pages.length - 1
+          movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, 1)        
+        } else if(swipeValue == -1) {
+          cardObj.cPage += 1;
+          if(cardObj.cPage == cardObj.pages.length) cardObj.cPage = 0
+          movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, -1)
+        }        
+
+      }
+
+
+  }, { passive: true} );
+
+  app.addEventListener('touchend', function(e) {
+    if(killSwitch) return;
+    killAnimation(card, shadow)
+    
+    startX = 0
+    swipeValue = 0
+    touchLock = false
+
+  }, { passive: true} );
+
+}
+
+
+
+//   export async function initMobile(app) {
+
+//     document.body.classList.add('mobile')
+//     // img transition function
+//     imgTrans()
+
+//     app.id = 'mobileApp'
+
+//     const outerShadow = ve(app, 'outerShadow')
+//     const shadow = ve(outerShadow, 'wrapperShadow')
+
+//     const outerContainer = ve(app, 'outerContainer')
+//     const wrapperContainer = ve(outerContainer, 'wrapperContainer')
+
+//     let dummiThick = 4
+//     let multi = 1
+//     const backface = ve(wrapperContainer, ['mobileWrapper', 'backface'])
+
+//     for(let i = 1; i < dummiThick; i++) {
+//       const box = ve(wrapperContainer, 'mobileWrapperThick', {
+//         transform: `translateZ(${i * multi}px)`
+//       })
+//     }
+
+//     const wrapper = ve(wrapperContainer, ['mobileWrapper', 'frontface'], {
+//       transform: `translateZ(${dummiThick * multi}px)`
+//     })
+
+//     const holdPlate = document.createElement('div')
+
+//     const intro = await genMobile('introduction', holdPlate, (dom, val)=>{
+//       const imgHold = ve(dom, 'imgHold')
+//       imgHold.appendChild(val.querySelector('img'))
+//       const introInfo = ve(dom)
+//       introInfo.id = 'introInfo'
+//       const h1 = ve(introInfo, undefined, undefined, 'h1')
+//       h1.innerText = val.querySelector('h1').innerText
+//       const infoArea = ve(introInfo, 'infoArea')
+//       infoArea.innerText = val.querySelector('.infoArea').innerText
+//       infoArea.innerText = infoArea.innerText
+//     })
+
+
+//     const cs = await genMobile('case_studies', holdPlate, (dom, val)=>{
+//       const header = ve(dom, 'header')
+//       const intro = ve(header, 'csTitle')
+//       const download = ve(header, 'download')
+//       download.innerHTML = `<a href="javascript:void(0)" download="#">
+//         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.01 25.01">
+//             <circle style = "fill: #eceded;" cx="12.5" cy="12.5" r="11"/>
+//             <path style = "fill: #96acb6;" d="M12.5,25.01C5.61,25.01,0,19.4,0,12.5S5.61,0,12.5,0s12.5,5.61,12.5,12.5-5.61,12.5-12.5,12.5ZM12.5,3C7.26,3,3,7.26,3,12.5s4.26,9.5,9.5,9.5,9.5-4.26,9.5-9.5S17.74,3,12.5,3Z"/>
+//             <path style = "fill: #96acb6;" d="M16.41,18.11h-7.81c-.55,0-1-.45-1-1s.45-1,1-1h7.81c.55,0,1,.45,1,1s-.45,1-1,1Z"/>
+//             <path style = "fill: #96acb6;" d="M16.41,10.73h-1.92v-3.67c0-.18-.15-.33-.33-.33h-3.35c-.18,0-.33.15-.33.33v3.67h-1.9c-.3,0-.44.37-.23.57l3.95,3.7c.13.12.33.12.45,0l3.87-3.7c.21-.2.07-.57-.23-.57Z"/>
+//         </svg>Save
+//       </a>`
+
+//       const body = ve(dom, 'body')
+//       const footer = ve(dom, 'footer')
+
+//       val.querySelectorAll('.study').forEach(v => {
+//         const csName = v.classList.value.replaceAll('study','').trim()
+//         const studyh = ve(intro, csName, undefined, 'h1')
+//         studyh.innerText = v.querySelector('h1').innerText
+        
+//         const csBody = ve(body, csName)
+//         csBody.appendChild(v.querySelector('.imgHold img'))
+//         csBody.innerHTML += v.querySelector('.meta').outerHTML
+//         csBody.innerHTML += v.querySelector('.info') .outerHTML
+//         csBody.querySelector('.cta').innerHTML = `<a href="download/JWhitmore-${csName}-CaseStudy.pdf" download="JWhitmore-${csName}-CaseStudy.pdf">${csBody.querySelector('.cta').innerHTML.replace('Read', 'Download')}</a>`
+
+//         const csFooter = ve(footer, csName)
+//         csFooter.innerHTML = `<svg class="eye ${csName}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 25.01 25.01">
+//   <defs>
+//     <clipPath id="clippath">
+//       <path d="M12.5,9.38c-2.96,0-5.45,2.14-6.22,2.88-.14.14-.14.36,0,.5.77.74,3.27,2.88,6.22,2.88s5.45-2.14,6.22-2.88c.14-.14.14-.36,0-.5-.77-.74-3.27-2.88-6.22-2.88Z"/>
+//     </clipPath>
+//   </defs>
+
+//       <path style = "fill: #eceded;" d="M12.51,0C5.6,0,0,5.6,0,12.51s5.6,12.51,12.51,12.51,12.51-5.6,12.51-12.51S19.45.04,12.58,0"/>
+
+//       <path class="eye-outline" d="M12.51,1.5C6.43,1.5,1.5,6.43,1.5,12.51s4.93,11,11,11,11-4.93,11-11S18.62,1.54,12.57,1.5"/>
+
+//       <g style = "clip-path: url(#clippath)">
+//         <circle class = "eye-pupil" style = "fill:#96acb6" cx="12.51" cy="12.51" r="2.05"/>
+//       </g>
+//         <path class = "eye-eyelid" style = "stroke-linejoin: round; stroke-width: .75; stroke: #96acb6; fill: #96acb6;" d="M19.22,12.5s-2.69-3.49-6.72-3.49-6.71,3.49-6.71,3.49c0,0,2.59-4.14,6.71-4.14s6.72,4.14,6.72,4.14Z"/>
+//         <path style = "stroke-linejoin: round; stroke-width: .75; stroke: #96acb6; fill: #96acb6;" d="M19.22,12.5s-2.69,3.51-6.72,3.51-6.71-3.51-6.71-3.51c0,0,2.59,4.16,6.71,4.16s6.72-4.16,6.72-4.16Z"/>
+// </svg> ${v.querySelector('h1').innerText}`
+
+//         const onDef = {
+//           opacity:1,
+//           x: 0,
+//           duration:0.4
+//         }
+
+//         const offDef = {
+//           x:5,
+//           opacity:0,
+//           duration:0.4          
+//         }
+
+//         csFooter.addEventListener('click', () => {
+//           footer.querySelectorAll('div').forEach(csVal => {
+//             if(csVal.querySelector('svg').classList.contains(csName)) {
+//               csVal.classList.add('on')
+//               csVal.querySelector('svg').style.opacity = 1;
+//               csVal.querySelector('.eye-pupil').classList.remove('sleep')
+//               csVal.querySelector('.eye-eyelid').classList.remove('sleep')
+//             } else {
+//               csVal.classList.remove('on')
+//               csVal.querySelector('svg').style.opacity = 0.5;
+//               csVal.querySelector('.eye-pupil').classList.add('sleep')
+//               csVal.querySelector('.eye-eyelid').classList.add('sleep')
+//             }
+//           })
+//           intro.querySelectorAll('h1').forEach(csVal => {
+//             if(csVal.classList.contains(csName)) { 
+//               gsap.to(csVal, {
+//                 ...onDef,
+//                 delay:0.2
+//               })
+//             } else {
+//               gsap.to(csVal, {
+//                 ...offDef,
+//                 delay:0
+//               })
+//             }
+//           })
+//           body.querySelectorAll(':scope > div').forEach(csVal => {
+//             if(csVal.classList.contains(csName)) {
+//               csVal.parentElement.scrollTo({ top: 0, behavior: 'smooth' })
+//               const alink = csVal.querySelector('a')
+//               download.querySelector('a').href = alink.href
+//               download.querySelector('a').download = alink.download
+//               gsap.to(csVal, {
+//                 ...onDef,
+//                 delay: 0.3
+//               })              
+//             } else {
+//               gsap.to(csVal, {
+//                 ...offDef,
+//                 delay:0.1
+//               })
+//             }
+//           })
+//         })
+
+//       })
+            
+//       intro.querySelectorAll('h1').forEach((csVal, i) => {
+//         csVal.style.opacity = 0
+//         if(i == 0) csVal.style.opacity = 1
+//       })
+
+//       body.querySelectorAll(':scope > div').forEach((csVal, i) => {
+//         csVal.style.opacity = 0        
+//         if(i == 0) {
+//           csVal.scrollTop = 0
+//           csVal.style.opacity = 1
+//           const alink = csVal.querySelector('a')
+//           download.querySelector('a').href = alink.href
+//           download.querySelector('a').download = alink.download
+//         }
+//       })
+
+//       footer.querySelectorAll('div').forEach((csVal, i) => {
+//         if(i == 0) {
+//           csVal.classList.add('on')
+//           csVal.querySelector('svg').style.opacity = 1;
+//           csVal.querySelector('.eye-pupil').classList.remove('sleep')
+//           csVal.querySelector('.eye-eyelid').classList.remove('sleep')
+//         } else {
+//           csVal.classList.remove('on')
+//           csVal.querySelector('svg').style.opacity = 0.5;
+//           csVal.querySelector('.eye-pupil').classList.add('sleep')
+//           csVal.querySelector('.eye-eyelid').classList.add('sleep')
+//         }
+//       })
+
+//     })
+
+//     const contact = await genMobile('contact', holdPlate, (dom, val) => {
+//       const contactDom = ve(dom)
+
+//       for(const props in contactInfo) {
+//         const p = contactInfo[props]
+//         let link = document.createElement('a')
+//         link.id = props
+//         const im = new Image()
+//         im.src = `assets/${props}logo.svg`
+    
+//         switch(props) {
+//           case 'li':
+//             link.innerHTML = `<span>linkedin</span>`       
+//           break;      
+//           case 'cv':
+//             link.innerHTML = `<span>Curriculum Vitae</span>`
+//           break;
+//           default:
+//           link.innerHTML = `<span>${p}</span>`
+    
+//         }
+    
+//         switch(props) {
+//           case 'tel':
+//             link.href = `tel:${p}`
+//             link.classList.add('copy')
+//             link.addEventListener('click', ()=> {
+//               copied(link, p)
+//             })
+//           break;
+//           case 'e':
+//             link.href = `mailto:${p}`
+//             link.classList.add('copy')
+//             link.addEventListener('click', ()=> {
+//               copied(link, p)
+//             })
+//           break;
+//           case 'cv':
+//             link.href = p
+//             link.download = 'J-Whitmore-CV'
+//           break;
+//           default:
+//             link.href = p
+//         }
+    
+//         link.prepend(im)    
+//         link.addEventListener('click', (e)=>{linkClick(e)})
+        
+//         val.querySelector('.infoArea').appendChild(link)
+//       }
+    
+//       contactDom.innerHTML = val.querySelector('.contactDetails').innerHTML
+//       const imgHold = ve(dom, 'imgHold')
+//       imgHold.innerHTML = val.querySelector('.imgHold div').innerHTML
+
+//     })
+
+
+//     holdPlate.querySelectorAll('img').forEach(i => {
+//       if(i.dataset.src) i.src = i.dataset.src
+//       i.style.opacity = 1
+//     })
+
+
+//     const card = {
+//       firstRun: true,
+//       sides: [wrapper, backface],
+//       container: wrapperContainer,
+//       holdPlate,
+//       shadow,
+//       face: 0,
+//       rotY: 0,
+//       cPage: 0,
+//       pages: [intro, cs, contact]
+//     }    
+
+//     const navBar = ve(app, 'navBar')
+
+//     const introButton = ve(navBar, ['introButton', 'on'])
+//     introButton.innerText = "Introduction"
+//     introButton.addEventListener('click', () => { movePage(navBar, introButton, 0, card) })
+
+//     const csButton = ve(navBar, 'csButton')
+//     csButton.innerText = "Case Studies"
+//     csButton.addEventListener('click', () => { movePage(navBar, csButton, 1, card) })
+    
+//     const contactButton = ve(navBar, 'contactButton')
+//     contactButton.innerText = "Contact"
+//     contactButton.addEventListener('click', () => { movePage(navBar, contactButton, 2, card) })
+
+//     card.navBar = navBar
+//     card.navSec = [introButton, csButton, contactButton]
+
+//     const navIndicator = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+//     navIndicator.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+//     navIndicator.setAttribute('viewBox', '0 0 29.71 37.07')
+//     navIndicator.classList.add('mobile-navIndicator')
+//     navIndicator.innerHTML = `
+//       <path style = "fill: #87b8c9;" d="M14.86,0L0,25.73h3.85c.99-5.17,5.55-9.1,11.01-9.1s10.01,3.92,11.01,9.1h3.85L14.86,0Z"/>
+//       <path style = "fill: #87b8c9;" d="M14.86,18.64c-4.35,0-8,3.03-8.96,7.1-.16.68-.26,1.39-.26,2.12,0,5.08,4.13,9.21,9.21,9.21s9.21-4.13,9.21-9.21c0-.73-.09-1.44-.26-2.12-.96-4.06-4.61-7.1-8.96-7.1Z"/>
+//     `
+//     navBar.appendChild(navIndicator)   
+//     wrapper.appendChild(intro)
+
+//     const navibb = navIndicator.getBoundingClientRect() 
+//     const secbb = introButton.getBoundingClientRect()
+//     const indX = secbb.x + secbb.width/2 - navibb.width/2
+
+//     gsap.set('.mobile-navIndicator', {
+//       opacity:1,
+//       x:indX,
+//     })
+
+
+//     const enterY = gsap.utils.random(-100,20)
+//     let enterR = gsap.utils.random(45,-45)
+//     enterR = enterR < 0 ? enterR-20 : enterR+20 
+//     console.log(enterR)
+//     gsap.from([outerContainer, outerShadow], {
+//       x: `120vw`,
+//       y: `${enterY}svh`,
+//       rotate: enterR,
+//       ease: "power3.out",
+//       duration: 1.5,
+//       delay: 0.3,
+//       onComplete: () => { swipehandling(app, outerContainer, outerShadow, card) },
+//     })
+
+//     returnMobileDrawn(app, card)
+
+//     const resizeObserver = new ResizeObserver(entries => {
+//       for (let entry of entries) {
+//         svgCleanUp()
+//         try {
+//           app.querySelectorAll('.convertedSVG').forEach(dom => {dom.remove()})
+//           holdPlate.querySelectorAll('.convertedSVG').forEach(dom => {dom.remove()})
+//       } catch(e) { }        
+//         returnMobileDrawn(app, card)
+//       }
+//     });   
+//     resizeObserver.observe(wrapper)
+    
+//   }
 
 
   function setFace(page, dom) {
@@ -570,7 +983,7 @@ function ve(to, name, style, type) {
       dom.id = `${mdFilePath}Mobile`
       const ele = document.createElement('div')
       ele.innerHTML = mdText
-      fn(dom, ele)
+      if(fn !== undefined) fn(dom, ele)
       
 
       return dom

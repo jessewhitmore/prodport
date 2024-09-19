@@ -39,18 +39,17 @@ let arrowPaths = []
 
 
 export function returnMobileDrawn(app, cards) {
+    const border = cardLineOff(app)
 
-    const side1 = cardLineOff(cards.sides[0])
-    const side2 = cardLineOff(cards.sides[1])
+    const cs = cards[1]
+    const offsetCS = 5
 
     // draw CS lines
     const size = {
-        w: app.querySelector('.mobileWrapper').offsetWidth, 
-        h: app.querySelector('.mobileWrapper').offsetHeight
+        w: app.offsetWidth - 80,
+        h: app.offsetHeight * 0.8 - 40
     }
 
-    const cs = cards.pages[1]
-    const offsetCS = 5
     const csHeader = cs.querySelector('.header')
     const csHeaderSVG = sv('svg', {
         viewBox: `0 0 ${size.w} ${30}`,
@@ -58,6 +57,7 @@ export function returnMobileDrawn(app, cards) {
     }) 
     stackedLines(csHeaderSVG, 'hor', 30-2, 0, size.w, 0.5, -offsetCS, 30, 2)
     csHeader.prepend(csHeaderSVG)   
+
 
     const csFooter = cs.querySelector('.footer') 
     const csFooterSVG = sv('svg', {
@@ -67,6 +67,16 @@ export function returnMobileDrawn(app, cards) {
 
     stackedLines(csFooterSVG, 'hor', 12, 0, size.w, 0.5, offsetCS, 30, 2)
     csFooter.prepend(csFooterSVG)
+
+
+    return;
+
+    const side1 = cardLineOff(cards.sides[0])
+    const side2 = cardLineOff(cards.sides[1])
+
+    // draw CS lines
+
+
 
 
     svg2img(side1)
@@ -94,6 +104,10 @@ function cardLineOff(dom) {
     const divide = 0.2
     const th = stackedLines(svg, 'hor', pl, 0 -  w*0.2, w + w*0.2, divide, offset, 0.5, lineWidth)
     const bh = stackedLines(svg, 'hor', h - pl, 0 -  w*0.2, w + w*0.2, divide, offset, 0.5, lineWidth)
+
+
+    const div = stackedLines(svg, 'hor', h * 0.85 - pl, w*0.05, w*0.95, divide, offset, 0.5, lineWidth)
+
 
     const lv = stackedLines(svg, 'ver', pl, 0 -  h*0.2, h + h*0.2, divide, offset, 0.5, lineWidth)
     const rv = stackedLines(svg, 'ver', w - pl, 0 -  h*0.2, h + h*0.2, divide, offset, 0.5, lineWidth)
@@ -139,7 +153,11 @@ function cardLineOff(dom) {
         maskLine(path, haz, svg)
     })   
   
-//    aniStroke(svg, lines, 0.25, 0.2, 0.25)
+    aniStroke(svg, lines, 0.25, 1, 0.25)
+    aniStroke(svg, hazardT, 0.2, 1, 0.05)
+    aniStroke(svg, hazardR, 0.2, 2, 0.05)
+    aniStroke(svg, hazardB, 0.2, 5, 0.05)
+    aniStroke(svg, hazardL, 0.2, 3, 0.05)
     dom.appendChild(svg)
     return svg;
 
