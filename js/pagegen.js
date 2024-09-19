@@ -38,7 +38,7 @@ function ve(to, name, style, type) {
   export async function initMobile(app) {
     
     document.body.classList.add('mobile')
-    window.scrollTo(0, 100)
+    window.scrollTo(0, window.innerHeight)
     window.addEventListener('scroll',  (e)=>{
       e.preventDefault()
     })
