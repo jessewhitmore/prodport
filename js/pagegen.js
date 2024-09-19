@@ -2,7 +2,7 @@ import { gsap } from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 gsap.registerPlugin(CustomEase);
 
-import { contactInfo, domEle, csDL } from "../main";
+import { contactInfo, domEle } from "../main";
 import { caseStudyGen } from './caseStudy.js'
 import { loadResolver, checkImagesLoaded } from "./loadhandler.js";
 import { returnDrawn, returnMobileDrawn, svgCleanUp } from "./svgDraw.js";
@@ -79,7 +79,7 @@ function appendQS(d, p, t) {
         csBody.appendChild(v.querySelector('.imgHold img'))
         csBody.innerHTML += v.querySelector('.meta').outerHTML
         csBody.innerHTML += v.querySelector('.info') .outerHTML
-        csBody.querySelector('.cta').innerHTML = `<a href="${csDL[csName]}" download="JWhitmore-${csName}-CaseStudy.pdf">${csBody.querySelector('.cta').innerHTML.replace('Read', 'Download')}</a>`
+        csBody.querySelector('.cta').innerHTML = `<a href="download/JWhitmore-${csName}-CaseStudy.pdf" download="JWhitmore-${csName}-CaseStudy.pdf">${csBody.querySelector('.cta').innerHTML.replace('Read', 'Download')}</a>`
 
         const csFooter = ve(footer, csName)
         csFooter.innerHTML = `<svg class="eye ${csName}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 25.01 25.01">

@@ -1,6 +1,5 @@
 import { gsap } from "gsap";
 import { loadResolver } from "./loadhandler";
-import { csDL } from "../main";
 
 async function insertCSMD(selector, mdFilePath) {
     try {
@@ -289,7 +288,7 @@ class slideInstance {
         </a>`
 
         const download = this.download = this.ve(controlsT, 'download')
-        download.innerHTML = `<a href="${csDL[this.studyName]}" download="JWhitmore-${this.studyName}-CaseStudy.pdf">
+        download.innerHTML = `<a href="download/JWhitmore-${this.studyName}-CaseStudy.pdf" download="JWhitmore-${this.studyName}-CaseStudy.pdf">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.01 25.01">
             <circle style = "fill: #eceded;" cx="12.5" cy="12.5" r="11"/>
             <path style = "fill: #96acb6;" d="M12.5,25.01C5.61,25.01,0,19.4,0,12.5S5.61,0,12.5,0s12.5,5.61,12.5,12.5-5.61,12.5-12.5,12.5ZM12.5,3C7.26,3,3,7.26,3,12.5s4.26,9.5,9.5,9.5,9.5-4.26,9.5-9.5S17.74,3,12.5,3Z"/>
