@@ -39,11 +39,8 @@ function ve(to, name, style, type) {
     
     document.body.classList.add('mobile')
     window.scrollTo(0, window.innerHeight)
-    window.addEventListener('scroll',  (e)=>{
-      e.preventDefault()
-      window.scrollTo(0, window.innerHeight)
 
-    })
+
     app.id = "mobileApp"
 
     const intro = await genMobile('introduction', app, (dom, val) => {
@@ -317,6 +314,15 @@ function ve(to, name, style, type) {
       }
     });   
     resizeObserver.observe(app)
+
+
+    window.addEventListener('scroll', (e)=>{
+      e.preventDefault()
+      // navBar.querySelectorAll('div').forEach((v,i) => {
+      //   console.log(i)
+      // })
+      window.scrollTo(0, window.innerHeight)
+    })  
 
 
     touchHandling(app, navBar, [intro, cs, contact])
