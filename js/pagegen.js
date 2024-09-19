@@ -395,11 +395,11 @@ function touchHandling(app, navBar, eles) {
       swipeValue = Math.max(-1,Math.min(1,distX / viewportHeight)) * -1;
 
       if(index + swipeValue < 0 || index + swipeValue >= eles.length) return
+      if(findParentWithClass(e.target, 'body')) return
+
       if(Math.abs(swipeValue) == 1) {
         touchLock = true
         index += swipeValue;
-
-        console.log(index)
 
         moveMobile(eles, index, navBar)
       }
