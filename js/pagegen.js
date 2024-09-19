@@ -38,7 +38,10 @@ function ve(to, name, style, type) {
   export async function initMobile(app) {
     
     document.body.classList.add('mobile')
-    window.scrollTo(0, 100);
+    window.scrollTo(0, 100)
+    window.addEventListener('scroll',  (e)=>{
+      e.preventDefault()
+    })
     app.id = "mobileApp"
 
     const intro = await genMobile('introduction', app, (dom, val) => {
