@@ -32,9 +32,6 @@ function ve(to, name, style, type) {
   return element;
 }
 
-function appendQS(d, p, t) {
-  d.appendChild(p.querySelector(t))
-}
 
   // ===================================================================== DEFAULT MOBILE
 
@@ -289,7 +286,6 @@ function appendQS(d, p, t) {
       <path style = "fill: #87b8c9;" d="M14.86,18.64c-4.35,0-8,3.03-8.96,7.1-.16.68-.26,1.39-.26,2.12,0,5.08,4.13,9.21,9.21,9.21s9.21-4.13,9.21-9.21c0-.73-.09-1.44-.26-2.12-.96-4.06-4.61-7.1-8.96-7.1Z"/>
     `
     navBar.appendChild(navIndicator)   
-//    wrapper.appendChild(intro)
 
     const navibb = navIndicator.getBoundingClientRect() 
     const secbb = introButton.getBoundingClientRect()
@@ -316,7 +312,7 @@ function appendQS(d, p, t) {
     resizeObserver.observe(app)
 
 
-//    touchHandling(app)
+    touchHandling(app, navBar, [intro, cs, contact])
 
 }
 
@@ -360,35 +356,48 @@ function mobExit(target) {
   })
 }
 
-function touchHandling(app) {
-  let startX = 0;
+function touchHandling(app, navBar, eles) {
+  let startY = 0;
   let swipeValue = 0
 
   let width = app.offsetWidth
   let killSwitch = false
-  let timeoutFire = null
+
   let touchLock = false
+  let index = 0;
+
   app.addEventListener('touchstart', function(e) {
-    killSwitch = findParentWithClass(e.target, 'body')
     const touch = e.touches[0]
-    startX = touch.clientX
+    startY = touch.clientY
     width = app.offsetWidth
-      
+
+    navBar.querySelectorAll('div').forEach((ele,i) => {
+      if(ele.classList.contains('on')) index = i
+    })    
+    
   }, { passive: true} );
 
   app.addEventListener('touchmove', function(e) {
-      if(cardObj.animating) return;
       if(killSwitch) return;
       if(touchLock) return;
 
       const touch = e.touches[0]
-      const distX = touch.clientX - startX
-      const viewportWidth = window.innerWidth * 0.2
+      const distX = touch.clientY - startY
+      const viewportHeight = window.innerHeight * 0.2
 
-      swipeValue = Math.max(-1,Math.min(1,distX / viewportWidth));
+      swipeValue = Math.max(-1,Math.min(1,distX / viewportHeight)) * -1;
 
-      let swipeDir = swipeValue < 0 ? 'left' : 'right'
+      if(index + swipeValue < 0 || index + swipeValue >= eles.length) return
+      if(Math.abs(swipeValue) == 1) {
+        touchLock = true
+        index += swipeValue;
 
+        console.log(index)
+
+        moveMobile(eles, index, navBar)
+      }
+
+      return
  
       gsap.killTweensOf(card)
       gsap.set(card, { 
@@ -432,10 +441,8 @@ function touchHandling(app) {
   }, { passive: true} );
 
   app.addEventListener('touchend', function(e) {
-    if(killSwitch) return;
-    killAnimation(card, shadow)
     
-    startX = 0
+    startY = 0
     swipeValue = 0
     touchLock = false
 
