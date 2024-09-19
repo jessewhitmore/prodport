@@ -41,6 +41,8 @@ function ve(to, name, style, type) {
     window.scrollTo(0, window.innerHeight)
     window.addEventListener('scroll',  (e)=>{
       e.preventDefault()
+      window.scrollTo(0, window.innerHeight)
+
     })
     app.id = "mobileApp"
 
