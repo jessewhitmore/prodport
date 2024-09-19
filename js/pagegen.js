@@ -387,15 +387,24 @@ function touchHandling(app, navBar, eles) {
   app.addEventListener('touchmove', function(e) {
       if(killSwitch) return;
       if(touchLock) return;
-
       const touch = e.touches[0]
+
+
+      if(findParentWithClass(e.target, 'body')) {
+        const bod = app.querySelector('.body'); 
+        if(bod.scrollTop > 0 && bod.scrollTop < bod.clientHeight) {
+          startY = touch.clientY
+          return;
+        }
+      }
+
       const distX = touch.clientY - startY
       const viewportHeight = window.innerHeight * 0.2
 
       swipeValue = Math.max(-1,Math.min(1,distX / viewportHeight)) * -1;
 
       if(index + swipeValue < 0 || index + swipeValue >= eles.length) return
-      if(findParentWithClass(e.target, 'body')) return
+
 
       if(Math.abs(swipeValue) == 1) {
         touchLock = true
