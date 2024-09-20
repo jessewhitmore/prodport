@@ -266,18 +266,21 @@ function ve(to, name, style, type) {
     const introButton = ve(navBar, ['introButton', 'on'])
     introButton.innerText = "Introduction"
     introButton.addEventListener('click', () => {
+      window.scrollTo(0, 0)
       moveMobile([intro, cs, contact], 0, navBar)
     })
 
     const csButton = ve(navBar, 'csButton')
     csButton.innerText = "Case Studies"
     csButton.addEventListener('click', () => { 
+      window.scrollTo(0, window.innerHeight)
       moveMobile([intro, cs, contact], 1, navBar)
     })
     
     const contactButton = ve(navBar, 'contactButton')
     contactButton.innerText = "Contact"
     contactButton.addEventListener('click', () => { 
+      window.scrollTo(0, window.innerHeight)
       moveMobile([intro, cs, contact], 2, navBar)
     })
 
@@ -315,14 +318,6 @@ function ve(to, name, style, type) {
     });   
     resizeObserver.observe(app)
 
-
-    window.addEventListener('scroll', (e)=>{
-      e.preventDefault()
-      // navBar.querySelectorAll('div').forEach((v,i) => {
-      //   console.log(i)
-      // })
-      window.scrollTo(0, window.innerHeight)
-    })  
 
 
     touchHandling(app, navBar, [intro, cs, contact])
@@ -398,7 +393,9 @@ function touchHandling(app, navBar, eles) {
 
       if(findParentWithClass(e.target, 'body')) {
         const bod = app.querySelector('.body'); 
-        if(bod.scrollTop > 0 && bod.scrollTop < bod.clientHeight) {
+
+        if(bod.scrollTop > 0 && bod.scrollTop + bod.clientHeight < bod.scrollHeight) {
+          console.log('here')
           startY = touch.clientY
           return;
         }
@@ -419,45 +416,6 @@ function touchHandling(app, navBar, eles) {
         moveMobile(eles, index, navBar)
       }
 
-      return
- 
-      gsap.killTweensOf(card)
-      gsap.set(card, { 
-        rotateY: 45*swipeValue,
-        transformOrigin: swipeDir == 'left' ? `35px 50%` : `${width - 35}px 50%`
-      })
-
-      gsap.killTweensOf(shadow)
-      gsap.set(shadow, {
-        scaleX: 1 - (0.3 * Math.abs(swipeValue)),
-        transformOrigin: swipeDir == 'left' ? `35px 50%` : `${width - 35}px 50%`
-      })
-
-      const flipDetermine = Math.abs((cardObj.rotY/180) % 2);
-      if(flipDetermine == 1) {
-        swipeDir = swipeDir == 'left' ? 'right' : 'left'
-      }
-
-      gsap.killTweensOf(shadow.querySelector('.wrapperShadow'))
-      gsap.set(shadow.querySelector('.wrapperShadow'), {
-        background: `linear-gradient(to left, rgba(60, 64, 64, ${swipeDir == 'right' ? 1 : 1 - Math.abs(swipeValue) }), rgba(60, 64, 64, ${swipeDir == 'left' ? 1 : 1 - Math.abs(swipeValue) }))`,
-      })
-
-      if(Math.abs(swipeValue) == 1) {
-        touchLock = true
-        killAnimation(card, shadow)
-
-        if(swipeValue == 1) {
-          cardObj.cPage -= 1;
-          if(cardObj.cPage < 0) cardObj.cPage = cardObj.pages.length - 1
-          movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, 1)        
-        } else if(swipeValue == -1) {
-          cardObj.cPage += 1;
-          if(cardObj.cPage == cardObj.pages.length) cardObj.cPage = 0
-          movePage(cardObj.navBar, cardObj.navSec[cardObj.cPage], cardObj.cPage, cardObj, -1)
-        }        
-
-      }
 
 
   }, { passive: true} );

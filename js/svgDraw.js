@@ -68,23 +68,6 @@ export function returnMobileDrawn(app, cards) {
     stackedLines(csFooterSVG, 'hor', 12, 0, size.w, 0.5, offsetCS, 30, 2)
     csFooter.prepend(csFooterSVG)
 
-
-    return;
-
-    const side1 = cardLineOff(cards.sides[0])
-    const side2 = cardLineOff(cards.sides[1])
-
-    // draw CS lines
-
-
-
-
-    svg2img(side1)
-    svg2img(side2)
-    svg2img(csHeaderSVG)
-    svg2img(csFooterSVG)
-
-
 }
 
 function cardLineOff(dom) {
@@ -156,8 +139,8 @@ function cardLineOff(dom) {
     aniStroke(svg, lines, 0.25, 1, 0.25)
     aniStroke(svg, hazardT, 0.2, 1, 0.05)
     aniStroke(svg, hazardR, 0.2, 2, 0.05)
-    aniStroke(svg, hazardB, 0.2, 5, 0.05)
-    aniStroke(svg, hazardL, 0.2, 3, 0.05)
+    aniStroke(svg, hazardB, 0.2, 3, 0.05)
+    aniStroke(svg, hazardL, 0.2, 2, 0.05)
     dom.appendChild(svg)
     return svg;
 
