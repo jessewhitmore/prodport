@@ -347,7 +347,8 @@ class slideInstance {
 
         prev.addEventListener('click', this.handlePrev)
         next.addEventListener('click', this.handleNext)
-        slideshow.addEventListener('click', this.handleNext)
+
+        slideshow.querySelector('.slidesWrapper').addEventListener('click', this.handleNext)
         slideshow.style.cursor = 'pointer'
 
         window.addEventListener("keydown", this.handleKeypress)
@@ -370,9 +371,9 @@ class slideInstance {
     depopulate() {
         this.prev.removeEventListener('click', this.handlePrev)
         this.next.removeEventListener('click', this.handleNext)
-        this.populatedSlideshow.addEventListener('click', this.handleNext)
+        this.populatedSlideshow.querySelector('.slidesWrapper').removeEventListener('click', this.handleNext)
 
-        this.close.removeEventListener('click', this.handleDepop)
+//        this.close.removeEventListener('click', this.handleDepop)
         window.removeEventListener('keydown', this.handleKeypress)
 
         window.removeEventListener('DOMMouseScroll', this.preventDefault, false);
