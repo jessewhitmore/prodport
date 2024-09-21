@@ -709,7 +709,7 @@ body.mobile {
   height: 100%;
   opacity:0;
   font-size: 4.2vw;
-  background-size: cover;
+  background: url(https://assets.playground.xyz/JWhitmore/59d3d051_paper.jpg) #f9f9f7;
 }
 
 #mobileApp > div[id] {
