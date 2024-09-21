@@ -364,6 +364,7 @@ function mobExit(target) {
   })
 }
 
+let movePos = 0;
 function touchHandling(app, navBar, eles) {
   let startY = 0;
   let swipeValue = 0
@@ -375,7 +376,12 @@ function touchHandling(app, navBar, eles) {
   let index = 0;
 
   document.addEventListener('scroll', ()=>{
-    alert('here')
+    e.preventDefault()
+    if(movePos == 0) {
+      window.scrollTo(0, 0)
+    } else {
+      window.scrollTo(0, 0)
+    }
   })
 
 
@@ -417,6 +423,7 @@ function touchHandling(app, navBar, eles) {
         touchLock = true
         index += swipeValue;
 
+        movePos = index
         moveMobile(eles, index, navBar)
       }
 
