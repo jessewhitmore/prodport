@@ -374,6 +374,11 @@ function touchHandling(app, navBar, eles) {
   let touchLock = false
   let index = 0;
 
+  document.addEventListener('scroll', ()=>{
+    alert('here')
+  })
+
+
   app.addEventListener('touchstart', function(e) {
     const touch = e.touches[0]
     startY = touch.clientY
@@ -395,7 +400,6 @@ function touchHandling(app, navBar, eles) {
         const bod = app.querySelector('.body'); 
 
         if(bod.scrollTop > 0 && bod.scrollTop + bod.clientHeight < bod.scrollHeight) {
-          console.log('here')
           startY = touch.clientY
           return;
         }
