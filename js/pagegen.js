@@ -380,7 +380,7 @@ function touchHandling(app, navBar, eles) {
     if(movePos == 0) {
       window.scrollTo(0, 0)
     } else {
-      window.scrollTo(0, 0)
+      window.scrollTo(0, window.innerHeight)
     }
   })
 
